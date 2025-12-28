@@ -14,6 +14,8 @@
         --cor-primaria-hover: #073a2b;
         --cor-recusar: #D93025;
         --cor-texto-principal: #333333;
+        --cor-texto-secundario: #666666;
+        --cor-borda: #E0E0E0;
         --cor-texto-branco: #FFFFFF; 
         --cor-fundo-card: rgba(255, 255, 255, 0.95);
       }
@@ -26,82 +28,122 @@
         color: var(--cor-texto-branco);
         display: flex; align-items: center; justify-content: center;
         min-height: 100vh; 
-        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+        background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
                           url('https://i.imgur.com/8Sq1suX.jpeg');
-        background-size: cover; background-position: center; background-attachment: fixed; 
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed; 
         text-shadow: 0 2px 4px rgba(0,0,0,0.6);
-        overflow-x: hidden;
+        overflow-x: hidden; 
       }
 
       #app {
         width: 100%; max-width: 480px;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-        padding: 30px; border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        display: flex; flex-direction: column; height: 85vh; 
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        padding: 30px; 
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        height: 85vh; 
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
       
       @media (max-width: 480px) {
-        body { padding: 0; }
-        #app { max-width: none; width: 100%; height: 100dvh; border-radius: 0; padding: 20px; background: rgba(0,0,0,0.6); border:none; }
+        body { padding: 0; align-items: flex-start; }
+        #app {
+          max-width: none; width: 100%; height: 100dvh; 
+          border-radius: 0; margin: 0; box-shadow: none;
+          padding: 20px; border: none;
+          background: rgba(0, 0, 0, 0.3); 
+        }
       }
 
-      .header { text-align: center; margin-bottom: 20px; flex-shrink: 0; }
-      .header h1 { margin: 0; font-size: 26px; font-weight: 700; color: #FFF; letter-spacing: 1px; }
-      .header p { margin: 5px 0 0; font-size: 13px; color: #DDD; text-transform: uppercase; letter-spacing: 2px; }
+      .header { text-align: center; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 15px; flex-shrink: 0; }
+      .header h1 { margin: 0; font-size: 24px; font-weight: 700; color: #FFF; letter-spacing: 1px; }
+      .header p { margin: 5px 0 0; font-size: 13px; color: #EEE; text-transform: uppercase; letter-spacing: 2px; }
 
-      #conteudo-ativo, #listaConvidados, #painelAdmin, #telaSucesso { display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; display: none; }
+      #conteudo-ativo, #telaSucesso, #painelAdmin { width: 100%; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; }
+
+      #listaConvidados { display: none; flex-direction: column; flex-grow: 1; overflow: hidden; height: 100%; }
+      #nomesContainer {
+        flex-grow: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 15px;
+        scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.5) transparent;
+      }
+
+      /* --- PAINEL ADMIN (Estilo "Sala de Controle" adaptado ao design original) --- */
+      #painelAdmin { display: none; }
+      .dashboard-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+        overflow-y: auto; padding-bottom: 20px; scrollbar-width: none; 
+      }
+      .stat-card {
+        background: var(--cor-fundo-card); padding: 15px; border-radius: 12px;
+        text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-shadow: none;
+        display: flex; flex-direction: column; justify-content: center;
+      }
+      .stat-card.full-width { grid-column: span 2; background: rgba(255, 255, 255, 0.95); }
+      .stat-card.destaque { border: 2px solid var(--cor-primaria); }
+      .stat-titulo { font-size: 11px; text-transform: uppercase; color: #666; margin-bottom: 5px; font-weight: 700; }
+      .stat-valor { font-size: 28px; font-weight: 800; color: #333; line-height: 1; }
+      .stat-obs { font-size: 10px; color: #888; margin-top: 5px; }
+      .c-verde { color: var(--cor-primaria); } .c-vermelho { color: var(--cor-recusar); } .c-azul { color: #0056b3; }
       
-      /* --- HOME / LOGIN --- */
-      #conteudo-ativo { display: flex; }
-      #countdown-container { margin-bottom: 30px; text-align: center; }
-      .countdown-title { font-size: 11px; text-transform: uppercase; color: #EEE; margin-bottom: 8px; }
-      #countdown { display: flex; justify-content: center; gap: 15px; }
-      .time-block { display: flex; flex-direction: column; align-items: center; }
-      .numero { font-size: 32px; font-weight: 700; line-height: 1; color: #FFF; }
-      .label { font-size: 10px; text-transform: uppercase; opacity: 0.8; margin-top: 2px; }
-      
-      input, select {
-        width: 100%; padding: 15px; border: none;
-        background: rgba(255,255,255,0.95); color: #333;
-        border-radius: 8px; font-size: 16px; font-weight: 600;
-        margin-bottom: 12px; text-align: center; text-transform: uppercase;
+      /* Inputs dentro do Painel Admin */
+      .admin-input { width: 100%; padding: 8px; margin-bottom: 5px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; color: #333; text-align: left; font-weight: 400; text-transform: none; text-shadow: none; }
+      .admin-btn { padding: 8px; font-size: 12px; margin-top: 5px; width: auto; display: inline-block; }
+
+      /* --- INPUTS E BOTOES PADRÃO --- */
+      input[type="text"] {
+        width: 100%; padding: 15px;
+        border: 1px solid rgba(255,255,255,0.5);
+        background: rgba(255,255,255,0.9);
+        color: #000; border-radius: 8px; font-size: 18px;
+        text-align: center; font-weight: 700; text-transform: uppercase;
+        margin-bottom: 15px; text-shadow: none;
       }
       button {
-        width: 100%; padding: 16px; background-color: var(--cor-primaria);
-        color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 700;
-        text-transform: uppercase; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); margin-top: auto;
+        width: 100%; padding: 16px;
+        background-color: var(--cor-primaria);
+        color: white; border: none; border-radius: 8px;
+        font-size: 16px; font-weight: 700; text-transform: uppercase;
+        cursor: pointer; transition: transform 0.1s;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        text-shadow: none; flex-shrink: 0; margin-top: auto;
       }
       button:active { transform: scale(0.98); }
       button.secondary { background-color: #555; margin-top: 10px; }
-      button.acao { margin-top: 0; font-size: 14px; padding: 12px; }
 
-      /* --- LISTA --- */
-      #nomesContainer { flex-grow: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 15px; }
-      .convidado-item { background: var(--cor-fundo-card); border-radius: 10px; padding: 15px; margin-bottom: 10px; text-shadow: none; color: #333; }
-      .convidado-item p.nome { margin: 0 0 5px; font-weight: 700; font-size: 16px; }
-      .radio-group { display: flex; background: #EEE; border-radius: 8px; padding: 4px; gap: 5px; }
-      .radio-group label { flex: 1; text-align: center; padding: 8px; border-radius: 6px; font-size: 13px; font-weight: 600; color: #666; cursor: pointer; }
-      .radio-group input:checked + label[for*="_y"] { background: var(--cor-primaria); color: white; }
-      .radio-group input:checked + label[for*="_n"] { background: var(--cor-recusar); color: white; }
-      input[type="radio"] { display: none; }
+      /* CARDS CONVIDADOS */
+      .convidado-item { background: var(--cor-fundo-card); border-radius: 10px; padding: 15px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-shadow: none; }
+      .convidado-item:last-child { margin-bottom: 5px; }
+      .convidado-item p.nome { margin: 0 0 5px; color: #333; font-weight: 700; font-size: 16px; }
+      .convidado-item .info-extra { font-size: 12px; color: #666; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+      .radio-group { display: flex; background: #EEE; border-radius: 8px; padding: 3px; }
+      .radio-group input { display: none; }
+      .radio-group label { flex: 1; text-align: center; padding: 12px 5px; border-radius: 6px; font-size: 13px; font-weight: 600; color: #555; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
+      .radio-group input[value="Confirmado"]:checked + label { background: var(--cor-primaria); color: white; }
+      .radio-group input[value="Recusado"]:checked + label { background: var(--cor-recusar); color: white; }
 
-      /* --- ADMIN SALA DE CONTROLE --- */
-      .admin-section { background: rgba(0,0,0,0.4); border-radius: 10px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); }
-      .admin-title { font-size: 12px; text-transform: uppercase; font-weight: 700; color: #BBB; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
-      
-      .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; overflow-y: auto; max-height: 200px; }
-      .stat-card { background: #FFF; padding: 10px; border-radius: 8px; text-align: center; color: #333; text-shadow: none; }
-      .stat-card.full { grid-column: span 2; }
-      .stat-val { font-size: 22px; font-weight: 800; }
-      .stat-lbl { font-size: 9px; text-transform: uppercase; color: #666; font-weight: 700; }
-      .stat-sub { font-size: 9px; color: #888; }
+      /* --- CONTADOR ORIGINAL --- */
+      #countdown-container { margin-bottom: 20px; text-align: center; flex-shrink: 0; }
+      .countdown-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #FFF; margin-bottom: 8px; opacity: 0.9; }
+      .countdown-footer { font-size: 11px; color: #EEE; margin-top: 8px; font-style: italic; opacity: 0.8; }
+      #countdown { display: flex; justify-content: center; gap: 15px; }
+      .time-block { display: flex; flex-direction: column; align-items: center; }
+      .numero { font-size: 28px; font-weight: 700; line-height: 1; color: #FFF; }
+      .label { font-size: 10px; text-transform: uppercase; opacity: 0.8; margin-top: 2px; }
 
-      .form-admin input, .form-admin select { margin-bottom: 8px; font-size: 14px; padding: 10px; text-align: left; }
-      
-      #loading, #mensagem { text-align: center; padding: 10px; background: #FFF; color: #333; border-radius: 8px; margin-top: 10px; font-weight: 600; text-shadow: none; display: none; }
+      #loading, #mensagem { text-align: center; padding: 15px; border-radius: 8px; margin-top: 10px; font-weight: 600; text-shadow: none; }
+      #loading { background: rgba(255,255,255,0.9); color: #333; }
+      #mensagem { display: none; }
+      #telaSucesso { text-align: center; justify-content: center; height: 100%; }
+      #telaSucesso h2 { font-size: 28px; margin-bottom: 10px; color: #FFF; }
+      #telaSucesso p { font-size: 16px; opacity: 0.9; }
+      #telaSucesso a { color: #FFF; font-weight: 700; margin-top: 20px; display: inline-block; font-size: 18px; }
+
     </style>
   </head>
   <body>
@@ -113,84 +155,101 @@
 
       <div id="conteudo-ativo">
         <div id="countdown-container">
-          <div class="countdown-title">Confirmações até <span id="lblDataLimite">...</span></div>
+          <div class="countdown-title">Encerramento das Confirmações em:</div>
           <div id="countdown">
             <div class="time-block"><span id="days" class="numero">--</span><span class="label">Dias</span></div>
             <div class="time-block"><span id="hours" class="numero">--</span><span class="label">Hs</span></div>
             <div class="time-block"><span id="minutes" class="numero">--</span><span class="label">Min</span></div>
+            <div class="time-block"><span id="seconds" class="numero">--</span><span class="label">Seg</span></div>
           </div>
+          <div class="countdown-footer">(Prazo final: <span id="lblPrazo">10/01/2026</span>)</div>
         </div>
         
-        <div style="margin-top:auto;">
-          <input type="text" id="codigoInput" placeholder="DIGITE SEU CÓDIGO">
+        <div id="login">
+          <p style="text-align:center; margin-bottom:10px; opacity:0.9; font-size:14px;">Digite o código do convite:</p>
+          <input type="text" id="codigoInput" placeholder="WS-00-00" maxlength="10" onkeyup="this.value = this.value.toUpperCase();">
           <button id="btnBuscar" onclick="buscar()">Confirmar Presença</button>
         </div>
       </div>
 
       <div id="listaConvidados">
-        <p style="text-align:center; font-size:13px; margin-bottom:10px;">Confirme quem irá comparecer:</p>
+        <p style="text-align:center; margin-bottom:10px; font-size:13px; opacity:0.9; flex-shrink: 0;">
+          Confirme quem da família irá comparecer:
+        </p>
         <div id="nomesContainer"></div>
         <button id="btnConfirmar" onclick="enviarConfirmacao()">Salvar Confirmação</button>
       </div>
 
-      <div id="painelAdmin" style="overflow-y:auto;">
-        <h3 style="text-align:center; margin-top:0;">⚙️ Sala de Controle</h3>
-        
-        <div class="admin-section">
-          <div class="admin-title">Monitoramento em Tempo Real</div>
-          <div class="dashboard-grid" id="gridStats">Carregando...</div>
-        </div>
-
-        <div class="admin-section">
-          <div class="admin-title">Data de Encerramento</div>
-          <div style="display:flex; gap:10px;">
-            <input type="date" id="adminDataLimite" style="margin:0;">
-            <button class="acao" onclick="salvarData()" style="width:auto;">Salvar</button>
+      <div id="painelAdmin">
+        <p style="text-align:center; margin-bottom:15px; font-size:16px; font-weight:700;">📊 Sala de Controle</p>
+        <div class="dashboard-grid">
+          
+          <div class="stat-card full-width destaque">
+            <span class="stat-titulo">Total de Convidados</span><span class="stat-valor" id="st_total">--</span>
           </div>
-        </div>
-
-        <div class="admin-section form-admin">
-          <div class="admin-title">Cadastrar Novo Convidado</div>
-          <input type="text" id="novoNome" placeholder="Nome Completo">
-          <select id="novoLado">
-            <option value="Willian">Convidado do Willian</option>
-            <option value="Sara">Convidado da Sara</option>
-            <option value="Ambos">Ambos</option>
-          </select>
-          <div style="display:flex; gap:10px;">
-            <input type="text" id="novoParentesco" placeholder="Parentesco (Ex: Tio)">
-            <input type="text" id="novoCodigo" placeholder="Cód. Família (Ex: WS-XX-00)">
+          <div class="stat-card">
+            <span class="stat-titulo">Confirmados</span><span class="stat-valor c-verde" id="st_confirmados">--</span>
           </div>
-          <button class="acao" onclick="adicionarNovo()">Cadastrar Tripulante</button>
-        </div>
+          <div class="stat-card">
+            <span class="stat-titulo">Recusados</span><span class="stat-valor c-vermelho" id="st_recusados">--</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-titulo">Pendentes</span><span class="stat-valor" id="st_pendentes">--</span>
+          </div>
+          <div class="stat-card" style="border: 1px solid #0056b3">
+            <span class="stat-titulo">Entregues S/ Resp</span><span class="stat-valor c-azul" id="st_entregues">--</span>
+             <span class="stat-obs">Col K = "s"</span>
+          </div>
 
+          <div class="stat-card full-width">
+             <span class="stat-titulo">📅 Alterar Prazo Final</span>
+             <div style="display:flex; gap:5px; align-items:center; margin-top:5px;">
+                <input type="date" id="adminData" class="admin-input">
+                <button class="button admin-btn" onclick="salvarData()">Salvar</button>
+             </div>
+          </div>
+
+          <div class="stat-card full-width">
+             <span class="stat-titulo">➕ Novo Convidado</span>
+             <input type="text" id="novoNome" class="admin-input" placeholder="Nome Completo">
+             <div style="display:flex; gap:5px;">
+               <input type="text" id="novoCodigo" class="admin-input" placeholder="Cód Família">
+               <select id="novoLado" class="admin-input">
+                 <option value="Willian">Willian</option>
+                 <option value="Sara">Sara</option>
+                 <option value="Ambos">Ambos</option>
+               </select>
+             </div>
+             <button class="button admin-btn" onclick="adicionarNovo()">Cadastrar</button>
+          </div>
+
+        </div>
         <button class="secondary" onclick="sairAdmin()">Sair do Painel</button>
       </div>
 
-      <div id="telaSucesso" style="text-align:center; justify-content:center;">
-        <h2 style="font-size:28px;">Confirmado! ✅</h2>
-        <p>Sua presença foi registrada com sucesso.</p>
-        <br>
-        <button class="secondary" onclick="location.reload()">Voltar</button>
+      <div id="conteudo-encerrado" style="display:none; text-align:center; justify-content: center; height: 100%;">
+        <h2 style="color:white;">Prazo Encerrado</h2>
+        <p>As confirmações pelo site estão fechadas.</p>
       </div>
 
-      <div id="conteudo-encerrado" style="display:none; text-align:center; justify-content:center; flex-grow:1;">
-        <h2>Prazo Encerrado 🔒</h2>
-        <p>As confirmações estão fechadas.</p>
-      </div>
-
-      <div id="loading">Processando...</div>
+      <div id="loading" style="display:none;">Carregando...</div>
       <div id="mensagem"></div>
+
+      <div id="telaSucesso" style="display:none;">
+        <h2>Salvo! ✅</h2>
+        <p>Sua presença foi registrada.</p>
+        <p><a href="#" onclick="reiniciar(event)">Sair / Outro Código</a></p>
+      </div>
     </div>
 
     <script>
-      // CONFIGURAÇÃO
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbySc_m4-r0UiREV5certyoh4uf3QA6uM4LbttTma7R9sxAG6RijzQ8VloXqRvUrgdPu/exec";
-      
-      // Data padrão caso a planilha falhe (fallback)
-      let deadline = new Date(2026, 0, 11).getTime(); 
+      // --- COLOQUE SUA URL AQUI ---
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbySc_m4-r0UiREV5certyoh4uf3QA6uM4LbttTma7R9sxAG6RijzQ8VloXqRvUrgdPu/exec"; 
+      // -----------------------------
 
-      // --- INICIALIZAÇÃO ---
+      let deadline = new Date(2026, 0, 11, 0, 0, 0).getTime(); // Default
+      const fictitiousCode = "WS-02-26";
+
       function iniciarContador() {
         const now = new Date().getTime();
         const diff = deadline - now;
@@ -204,157 +263,219 @@
         const d = Math.floor(diff / (1000 * 60 * 60 * 24));
         const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-        document.getElementById('days').innerText = d < 10 ? '0'+d : d;
-        document.getElementById('hours').innerText = h < 10 ? '0'+h : h;
-        document.getElementById('minutes').innerText = m < 10 ? '0'+m : m;
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        const f = n => n < 10 ? '0'+n : n;
+        document.getElementById('days').innerText = f(d);
+        document.getElementById('hours').innerText = f(h);
+        document.getElementById('minutes').innerText = f(m);
+        document.getElementById('seconds').innerText = f(s);
       }
       setInterval(iniciarContador, 1000);
+      iniciarContador();
 
-      // --- COMUNICAÇÃO API ---
+      // NOVA FUNÇÃO DE COMUNICAÇÃO
       async function enviarDados(action, dados = {}) {
+        const body = JSON.stringify({ action: action, ...dados });
         return fetch(SCRIPT_URL, {
-          method: 'POST', body: JSON.stringify({ action, ...dados })
-        }).then(r => r.json());
+          method: 'POST',
+          body: body
+        }).then(response => response.json());
       }
 
       function buscar() {
-        const codigo = document.getElementById('codigoInput').value.trim().toUpperCase();
-        if (!codigo) return alertMsg("Digite o código.", true);
+        var codigo = document.getElementById('codigoInput').value.trim().toUpperCase();
+        if (!codigo) return alertMsg("Digite o código!", true);
+        if (codigo === fictitiousCode) return alertMsg("Este é apenas um exemplo. Use o seu código.", true);
         
-        mostrarLoading(true, "Buscando...");
-        enviarDados('buscar', { codigo: codigo }).then(res => {
-          mostrarLoading(false);
-          if(res.error) return alertMsg(res.error, true);
-          
-          if(res.isAdmin) {
-             abrirPainelAdmin();
-          } else {
-             // Atualiza data limite se vier do backend
-             if(res.dataLimite) {
-                deadline = new Date(res.dataLimite).getTime();
-                iniciarContador();
-             }
-             renderizarConvidados(res.convidados);
-          }
-        }).catch(e => {
-          mostrarLoading(false);
-          alertMsg("Erro de conexão.", true);
-        });
+        mostrarLoading(true, "Verificando...");
+        document.getElementById('btnBuscar').disabled = true;
+        
+        enviarDados('buscar', { codigo: codigo })
+          .then(r => processarLogin(r))
+          .catch(e => tratarErro(e));
       }
 
-      function renderizarConvidados(lista) {
-        let html = "";
-        lista.forEach(c => {
-          const checkSim = c.status === 'Confirmado' ? 'checked' : '';
-          const checkNao = c.status === 'Recusado' ? 'checked' : '';
+      function processarLogin(r) {
+        mostrarLoading(false);
+        document.getElementById('btnBuscar').disabled = false;
+        
+        if (r.error) return alertMsg(r.error, true);
+        
+        // Se a planilha mandou uma data limite atualizada, usamos ela
+        if (r.dataLimite) {
+            atualizarPrazoVisual(r.dataLimite);
+        }
+
+        if (r.isAdmin) { abrirPainelAdmin(); return; }
+        mostrarListaConvidados(r.convidados);
+      }
+      
+      function atualizarPrazoVisual(dataString) {
+          // Tenta converter string da planilha para data JS
+          let novaData = new Date(dataString);
+          if (!isNaN(novaData)) {
+             deadline = novaData.getTime();
+             // Formata para DD/MM/AAAA para exibir no texto
+             let dia = String(novaData.getDate()).padStart(2, '0');
+             let mes = String(novaData.getMonth() + 1).padStart(2, '0');
+             let ano = novaData.getFullYear();
+             document.getElementById('lblPrazo').innerText = `${dia}/${mes}/${ano}`;
+             iniciarContador(); // Recalcula
+          }
+      }
+
+      function abrirPainelAdmin() {
+        document.getElementById('conteudo-ativo').style.display = 'none';
+        document.getElementById('painelAdmin').style.display = 'flex';
+        carregarDashboard();
+      }
+      
+      function carregarDashboard() {
+        mostrarLoading(true, "Carregando Sala de Controle...");
+        enviarDados('dashboard')
+          .then(d => {
+             mostrarLoading(false);
+             if(d.error) return alertMsg(d.error, true);
+             
+             // Preencher stats
+             document.getElementById('st_total').innerText = d.total;
+             document.getElementById('st_confirmados').innerText = d.confirmados;
+             document.getElementById('st_recusados').innerText = d.recusados;
+             document.getElementById('st_pendentes').innerText = d.pendentes;
+             document.getElementById('st_entregues').innerText = d.entreguesPendentes || 0;
+             
+             // Preencher input de data se existir
+             if(d.configData) {
+                 // Formato esperado pelo input date: yyyy-mm-dd
+                 // A planilha pode mandar dd/mm/yyyy. Vamos tentar adaptar.
+                 // Se vier formato ISO, ok. Se não, deixamos em branco para o usuário setar.
+                 let dt = new Date(d.configData);
+                 if(!isNaN(dt)) {
+                     document.getElementById('adminData').value = dt.toISOString().split('T')[0];
+                 }
+             }
+          })
+          .catch(e => tratarErro(e));
+      }
+      
+      function salvarData() {
+          let novaData = document.getElementById('adminData').value;
+          if(!novaData) return alertMsg("Escolha uma data", true);
+          mostrarLoading(true, "Salvando Data...");
+          enviarDados('salvarConfig', { novaData: novaData }).then(r => {
+              mostrarLoading(false);
+              alertMsg("Data atualizada com sucesso!");
+          });
+      }
+      
+      function adicionarNovo() {
+          let dados = {
+              nome: document.getElementById('novoNome').value,
+              codigo: document.getElementById('novoCodigo').value,
+              lado: document.getElementById('novoLado').value,
+              parentesco: "Convidado",
+              funcao: "Convidado"
+          };
+          if(!dados.nome || !dados.codigo) return alertMsg("Preencha Nome e Código", true);
+          
+          mostrarLoading(true, "Cadastrando...");
+          enviarDados('adicionarConvidado', { dados: dados }).then(r => {
+              mostrarLoading(false);
+              alertMsg("Convidado adicionado!");
+              document.getElementById('novoNome').value = "";
+              carregarDashboard(); // Atualiza números
+          });
+      }
+
+      function sairAdmin() {
+        document.getElementById('painelAdmin').style.display = 'none';
+        document.getElementById('conteudo-ativo').style.display = 'flex';
+        document.getElementById('codigoInput').value = '';
+        alertMsg("");
+      }
+
+      function mostrarListaConvidados(convidados) {
+        var html = "";
+        convidados.forEach(c => {
+          var isConf = c.status === 'Confirmado' ? 'checked' : '';
+          var isRec = c.status === 'Recusado' ? 'checked' : '';
+          var grp = `rsvp_${c.linha}`;
+          var extra = []; var emoji = "";
+          if(c.funcao && c.funcao.match(/noiv/i)) emoji = "💍";
+          else if(c.funcao && c.funcao.match(/madrinha|padrinho/i)) emoji = "✨";
+          if(c.parentesco) extra.push(c.parentesco);
+          
           html += `
             <div class="convidado-item">
-              <p class="nome">${c.nome} <small style="font-weight:400; opacity:0.7">(${c.parentesco || ''})</small></p>
+              <p class="nome">${c.nome} ${emoji}</p>
+              ${extra.length ? `<div class="info-extra"><span>${extra.join('</span><span>')}</span></div>` : ''}
               <div class="radio-group">
-                <input type="radio" name="rsvp_${c.linha}" id="s_${c.linha}" value="Confirmado" data-linha="${c.linha}" ${checkSim}>
-                <label for="s_${c.linha}">✅ Vou</label>
-                <input type="radio" name="rsvp_${c.linha}" id="n_${c.linha}" value="Recusado" data-linha="${c.linha}" ${checkNao}>
-                <label for="n_${c.linha}">❌ Não vou</label>
+                <input type="radio" name="${grp}" id="${grp}_y" value="Confirmado" data-linha="${c.linha}" ${isConf}>
+                <label for="${grp}_y">✅ Vou</label>
+                <input type="radio" name="${grp}" id="${grp}_n" value="Recusado" data-linha="${c.linha}" ${isRec}>
+                <label for="${grp}_n">❌ Não vou</label>
               </div>
             </div>`;
         });
         document.getElementById('nomesContainer').innerHTML = html;
         document.getElementById('conteudo-ativo').style.display = 'none';
         document.getElementById('listaConvidados').style.display = 'flex';
+        alertMsg("");
       }
 
       function enviarConfirmacao() {
-        mostrarLoading(true, "Salvando...");
-        const respostas = [];
-        document.querySelectorAll('input[type="radio"]:checked').forEach(el => {
-          respostas.push({ linha: el.dataset.linha, status: el.value });
+        var btn = document.getElementById('btnConfirmar');
+        btn.disabled = true; btn.innerText = "SALVANDO...";
+        mostrarLoading(true, "Salvando respostas...");
+        var respostas = [];
+        document.querySelectorAll('#nomesContainer input:checked').forEach(input => {
+          respostas.push({ linha: parseInt(input.dataset.linha), status: input.value });
         });
         
-        enviarDados('atualizar', { respostas }).then(r => {
-          mostrarLoading(false);
-          document.getElementById('listaConvidados').style.display = 'none';
-          document.getElementById('telaSucesso').style.display = 'flex';
-        });
+        enviarDados('atualizar', { respostas: respostas })
+          .then(res => sucessoEnvio(res))
+          .catch(e => tratarErro(e));
       }
 
-      // --- ADMIN CONTROLS ---
-      function abrirPainelAdmin() {
-        document.getElementById('conteudo-ativo').style.display = 'none';
-        document.getElementById('painelAdmin').style.display = 'flex';
-        carregarStats();
-      }
-      
-      function sairAdmin() {
-        location.reload();
+      function sucessoEnvio(r) {
+        mostrarLoading(false);
+        if(r.error) { tratarErro(new Error(r.error)); return; }
+        document.getElementById('listaConvidados').style.display = 'none';
+        document.getElementById('telaSucesso').style.display = 'flex';
+        alertMsg("");
       }
 
-      function carregarStats() {
-        enviarDados('dashboard').then(d => {
-          // Atualiza Data no Input
-          if(d.configData) {
-             // Formata para input date (yyyy-mm-dd) se necessário, ou usa direto se vier iso
-             let dt = new Date(d.configData);
-             let iso = dt.toISOString().split('T')[0];
-             document.getElementById('adminDataLimite').value = iso;
-          }
-
-          document.getElementById('gridStats').innerHTML = `
-            <div class="stat-card full"><div class="stat-val">${d.total}</div><div class="stat-lbl">Total Lista</div></div>
-            <div class="stat-card"><div class="stat-val" style="color:var(--cor-primaria)">${d.confirmados}</div><div class="stat-lbl">Confirmados</div></div>
-            <div class="stat-card"><div class="stat-val" style="color:var(--cor-recusar)">${d.recusados}</div><div class="stat-lbl">Recusados</div></div>
-            <div class="stat-card"><div class="stat-val">${d.pendentes}</div><div class="stat-lbl">Pendentes</div></div>
-            <div class="stat-card" style="border:1px solid #0056b3"><div class="stat-val" style="color:#0056b3">${d.entreguesPendentes}</div><div class="stat-lbl">Entregues S/ Resp</div><div class="stat-sub">Col K="s"</div></div>
-            <div class="stat-card"><div class="stat-val">${d.willian}</div><div class="stat-lbl">Willian</div></div>
-            <div class="stat-card"><div class="stat-val">${d.sara}</div><div class="stat-lbl">Sara</div></div>
-          `;
-        });
+      function tratarErro(e) {
+        mostrarLoading(false);
+        document.getElementById('btnBuscar').disabled = false;
+        var btnConf = document.getElementById('btnConfirmar');
+        if(btnConf) { btnConf.disabled = false; btnConf.innerText = "SALVAR CONFIRMAÇÃO"; }
+        alertMsg("⚠️ " + (e.message || "Erro"), true);
       }
 
-      function salvarData() {
-        const novaData = document.getElementById('adminDataLimite').value;
-        if(!novaData) return alert("Selecione uma data.");
-        mostrarLoading(true, "Atualizando sistema...");
-        
-        enviarDados('salvarConfig', { novaData }).then(r => {
-           mostrarLoading(false);
-           alertMsg("Data atualizada com sucesso!");
-        });
-      }
-
-      function adicionarNovo() {
-        const dados = {
-          nome: document.getElementById('novoNome').value,
-          lado: document.getElementById('novoLado').value,
-          parentesco: document.getElementById('novoParentesco').value,
-          codigo: document.getElementById('novoCodigo').value.toUpperCase(),
-          funcao: "Convidado"
-        };
-
-        if(!dados.nome || !dados.codigo) return alertMsg("Nome e Código são obrigatórios", true);
-
-        mostrarLoading(true, "Cadastrando...");
-        enviarDados('adicionarConvidado', { dados }).then(r => {
-          mostrarLoading(false);
-          alertMsg("Cadastrado com sucesso!");
-          // Limpa campos
-          document.getElementById('novoNome').value = "";
-          document.getElementById('novoCodigo').value = "";
-          carregarStats(); // Recarrega números
-        });
-      }
-
-      // --- UTILITÁRIOS ---
       function alertMsg(msg, erro=false) {
-        const div = document.getElementById('mensagem');
+        var div = document.getElementById('mensagem');
+        if(!msg) { div.style.display = 'none'; return; }
         div.style.display = 'block'; div.innerText = msg;
-        div.style.color = erro ? 'red' : 'green';
-        setTimeout(() => div.style.display = 'none', 3000);
+        div.style.backgroundColor = erro ? '#ffdddd' : '#ddffdd';
+        div.style.color = erro ? '#a00' : '#0a0';
       }
-      function mostrarLoading(show, txt="Carregando...") {
-        const div = document.getElementById('loading');
+
+      function mostrarLoading(show, txt) {
+        var div = document.getElementById('loading');
         div.style.display = show ? 'block' : 'none';
-        div.innerText = txt;
+        if(txt) div.innerText = txt;
+      }
+
+      function reiniciar(e) {
+        e.preventDefault();
+        document.getElementById('codigoInput').value = "";
+        var btnConf = document.getElementById('btnConfirmar');
+        if(btnConf) { btnConf.disabled = false; btnConf.innerText = "SALVAR CONFIRMAÇÃO"; }
+        document.getElementById('telaSucesso').style.display = 'none';
+        document.getElementById('conteudo-ativo').style.display = 'flex';
+        alertMsg(""); 
       }
     </script>
   </body>
