@@ -237,7 +237,7 @@
              <span class="stat-titulo">➕ Adicionar Convidado</span>
              <input type="text" id="novoNome" class="admin-input" placeholder="Nome Completo" style="text-align:left; text-transform:none; font-weight:400; font-size:14px;">
              <div style="display:flex; gap:5px;">
-               <input type="text" id="novoCodigo" class="admin-input" placeholder="WS-RJ-123" style="text-align:center; text-transform:uppercase;">
+               <input type="text" id="novoCodigo" class="admin-input" placeholder="WS-RJ-12..." style="text-align:center; text-transform:uppercase;">
                <select id="novoLado" class="admin-input">
                  <option value="Willian">Willian</option>
                  <option value="Sara">Sara</option>
@@ -272,30 +272,30 @@
       // CONFIGURAÇÃO
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbySc_m4-r0UiREV5certyoh4uf3QA6uM4LbttTma7R9sxAG6RijzQ8VloXqRvUrgdPu/exec"; 
       
-      // EXEMPLO NO NOVO FORMATO (2 LETRAS - 2 LETRAS - 3 NUMEROS)
       const FICTITIOUS_CODE = "WS-RJ-123";
-      
       // Defina sua data limite real aqui
       let deadline = new Date(2026, 1, 1, 0, 0, 0).getTime(); 
 
-      // 1. MÁSCARA INTELIGENTE (Input) - ADAPTADA PARA XX-XX-000
+      // 1. MÁSCARA INTELIGENTE - Flexível (2 ou 3 números no final)
       const inputCodigo = document.getElementById('codigoInput');
       
       inputCodigo.addEventListener('input', function(e) {
-          // Limpa: TUDO que não for letra ou número sai
+          // Limpa tudo que não for alfanumérico
           let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
 
-          // Limita a 7 caracteres úteis (Ex: WSRJ123)
+          // Limita ao máximo possível (4 letras + 3 números = 7 chars)
           if (v.length > 7) v = v.slice(0, 7);
 
-          // Formatação Visual: XX-XX-XXX
+          // Formatação Visual: XX-XX-XXX (ou XX)
+          // Adiciona primeiro traço
           if (v.length > 2) v = v.slice(0, 2) + '-' + v.slice(2);
+          // Adiciona segundo traço
           if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5);
 
           e.target.value = v;
       });
 
-      // --- CONTADOR (Mantido) ---
+      // --- CONTADOR ---
       function iniciarContador() {
         const now = new Date().getTime();
         const diff = deadline - now;
@@ -325,19 +325,18 @@
         }).then(response => response.json());
       }
 
-      // 2. FUNÇÃO BUSCAR (Lógica Robusta para XX-XX-000)
+      // 2. FUNÇÃO BUSCAR (Validação flexível)
       function buscar() {
         var rawValue = document.getElementById('codigoInput').value.toUpperCase();
         
-        // Remove tudo que não é letra/número
+        // Remove sujeira para validar tamanho real
         var limpo = rawValue.replace(/[^A-Z0-9]/g, '');
 
-        // Validação: Precisa ter 7 caracteres (Ex: WSRJ123)
-        if (limpo.length < 7) return alertMsg("Código incompleto.", true);
+        // Aceita tamanho 6 (ex: WSRJ12) ou 7 (ex: WSRJ123)
+        if (limpo.length < 6) return alertMsg("Código incompleto.", true);
         
-        // Formata para o padrão da planilha (XX-XX-XXX)
-        // 0,2 (WS) + 2,4 (RJ) + 4,7 (123)
-        var codigoFormatado = limpo.slice(0,2) + '-' + limpo.slice(2,4) + '-' + limpo.slice(4,7);
+        // Formata para o padrão (XX-XX-restante)
+        var codigoFormatado = limpo.slice(0,2) + '-' + limpo.slice(2,4) + '-' + limpo.slice(4);
 
         if (codigoFormatado === FICTITIOUS_CODE) return alertMsg("Código de exemplo. Use o seu código real.", true);
         
@@ -404,12 +403,12 @@
       }
       
       function adicionarNovo() {
-          // Formata código novo: remove sujeira e reaplica traços
+          // Admin também aceita 6 ou 7 chars limpos
           let codRaw = document.getElementById('novoCodigo').value.toUpperCase().replace(/[^A-Z0-9]/g, '');
           let codFinal = codRaw;
           
-          if(codRaw.length === 7) {
-             codFinal = codRaw.slice(0,2) + '-' + codRaw.slice(2,4) + '-' + codRaw.slice(4,7);
+          if(codRaw.length >= 6) {
+             codFinal = codRaw.slice(0,2) + '-' + codRaw.slice(2,4) + '-' + codRaw.slice(4);
           }
 
           let dados = {
@@ -418,8 +417,9 @@
               lado: document.getElementById('novoLado').value,
               parentesco: "Convidado", funcao: "Convidado"
           };
-          // Validação simples: precisa de nome e código com tamanho mínimo visual (contando traços)
-          if(!dados.nome || dados.codigo.length < 9) return alertMsg("Preencha Nome e Código corretamente", true);
+          
+          // Validação visual (mínimo 8 chars: XX-XX-XX)
+          if(!dados.nome || dados.codigo.length < 8) return alertMsg("Preencha Nome e Código corretamente", true);
           
           toggleLoading(true, "Cadastrando...");
           enviarDados('adicionarConvidado', { dados: dados }).then(r => {
