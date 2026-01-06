@@ -1,54 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Willian & Sara | Confirmação</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
     
     <style>
       :root {
         --cor-primaria: #0A4F3A;
         --cor-primaria-hover: #073a2b;
         --cor-recusar: #D93025;
-        --cor-texto-principal: #333333;
-        --cor-texto-secundario: #666666;
-        --cor-borda: #E0E0E0;
-        --cor-texto-branco: #FFFFFF; 
-        --cor-fundo-card: rgba(255, 255, 255, 0.95);
+        --cor-texto-escuro: #333333;
+        --cor-texto-suave: #666666;
+        --cor-branco: #FFFFFF; 
+        --cor-fundo-card: rgba(255, 255, 255, 0.96);
+        --sombra-padrao: 0 4px 15px rgba(0,0,0,0.25);
+        --glass-bg: rgba(255, 255, 255, 0.1);
+        --glass-border: rgba(255, 255, 255, 0.2);
       }
       
-      * { box-sizing: border-box; }
+      * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
 
       body {
         font-family: 'Montserrat', sans-serif;
         margin: 0; padding: 20px;
-        color: var(--cor-texto-branco);
+        color: var(--cor-branco);
         display: flex; align-items: center; justify-content: center;
         min-height: 100vh; 
-        background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
                           url('https://i.imgur.com/8Sq1suX.jpeg');
         background-size: cover;
         background-position: center;
         background-attachment: fixed; 
-        text-shadow: 0 2px 4px rgba(0,0,0,0.6);
-        overflow-x: hidden; 
+        text-shadow: 0 2px 4px rgba(0,0,0,0.7);
       }
 
       #app {
         width: 100%; max-width: 480px;
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(3px);
-        -webkit-backdrop-filter: blur(3px);
+        background: var(--glass-bg);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         padding: 30px; 
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
         display: flex;
         flex-direction: column;
         height: 85vh; 
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--glass-border);
+        transition: all 0.3s ease;
       }
       
       @media (max-width: 480px) {
@@ -57,92 +59,115 @@
           max-width: none; width: 100%; height: 100dvh; 
           border-radius: 0; margin: 0; box-shadow: none;
           padding: 20px; border: none;
-          background: rgba(0, 0, 0, 0.3); 
+          background: rgba(0, 0, 0, 0.45); 
         }
       }
 
-      .header { text-align: center; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 15px; flex-shrink: 0; }
-      .header h1 { margin: 0; font-size: 24px; font-weight: 700; color: #FFF; letter-spacing: 1px; }
-      .header p { margin: 5px 0 0; font-size: 13px; color: #EEE; text-transform: uppercase; letter-spacing: 2px; }
+      .header { text-align: center; padding-bottom: 15px; border-bottom: 1px solid var(--glass-border); margin-bottom: 15px; flex-shrink: 0; }
+      .header h1 { margin: 0; font-size: 26px; font-weight: 800; color: #FFF; letter-spacing: 1px; }
+      .header p { margin: 5px 0 0; font-size: 13px; color: #EEE; text-transform: uppercase; letter-spacing: 3px; font-weight: 500; }
 
-      #conteudo-ativo, #telaSucesso, #painelAdmin { width: 100%; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; }
+      /* Estrutura de Layout */
+      #conteudo-ativo, #telaSucesso, #painelAdmin, #listaConvidados { 
+        width: 100%; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; 
+      }
+      
+      #listaConvidados, #painelAdmin, #telaSucesso { display: none; } 
 
-      #listaConvidados { display: none; flex-direction: column; flex-grow: 1; overflow: hidden; height: 100%; }
       #nomesContainer {
         flex-grow: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 15px;
         scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.5) transparent;
       }
 
-      /* --- PAINEL ADMIN (Estilo "Sala de Controle" adaptado ao design original) --- */
-      #painelAdmin { display: none; }
+      /* --- PAINEL ADMIN --- */
       .dashboard-grid {
         display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
         overflow-y: auto; padding-bottom: 20px; scrollbar-width: none; 
       }
       .stat-card {
         background: var(--cor-fundo-card); padding: 15px; border-radius: 12px;
-        text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-shadow: none;
+        text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-shadow: none;
         display: flex; flex-direction: column; justify-content: center;
       }
-      .stat-card.full-width { grid-column: span 2; background: rgba(255, 255, 255, 0.95); }
-      .stat-card.destaque { border: 2px solid var(--cor-primaria); }
-      .stat-titulo { font-size: 11px; text-transform: uppercase; color: #666; margin-bottom: 5px; font-weight: 700; }
-      .stat-valor { font-size: 28px; font-weight: 800; color: #333; line-height: 1; }
-      .stat-obs { font-size: 10px; color: #888; margin-top: 5px; }
+      .stat-card.full-width { grid-column: span 2; }
+      .stat-card.destaque { border: 2px solid var(--cor-primaria); background: #fff; }
+      .stat-titulo { font-size: 10px; text-transform: uppercase; color: #666; margin-bottom: 5px; font-weight: 700; letter-spacing: 0.5px; }
+      .stat-valor { font-size: 26px; font-weight: 800; color: #333; line-height: 1; }
+      .stat-obs { font-size: 9px; color: #888; margin-top: 5px; }
       .c-verde { color: var(--cor-primaria); } .c-vermelho { color: var(--cor-recusar); } .c-azul { color: #0056b3; }
       
-      /* Inputs dentro do Painel Admin */
-      .admin-input { width: 100%; padding: 8px; margin-bottom: 5px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; color: #333; text-align: left; font-weight: 400; text-transform: none; text-shadow: none; }
-      .admin-btn { padding: 8px; font-size: 12px; margin-top: 5px; width: auto; display: inline-block; }
+      .admin-input { 
+        width: 100%; padding: 10px; margin-bottom: 5px; border: 1px solid #ccc; 
+        border-radius: 6px; font-size: 14px; color: #333; text-shadow: none; 
+      }
+      .admin-btn { padding: 8px 15px; font-size: 12px; margin-top: 5px; width: auto; display: inline-block; }
 
-      /* --- INPUTS E BOTOES PADRÃO --- */
+      /* --- INPUTS E BOTOES GERAIS --- */
       input[type="text"] {
         width: 100%; padding: 15px;
-        border: 1px solid rgba(255,255,255,0.5);
-        background: rgba(255,255,255,0.9);
-        color: #000; border-radius: 8px; font-size: 18px;
+        border: 2px solid rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.95);
+        color: var(--cor-texto-escuro); border-radius: 10px; font-size: 18px;
         text-align: center; font-weight: 700; text-transform: uppercase;
-        margin-bottom: 15px; text-shadow: none;
+        margin-bottom: 15px; text-shadow: none; transition: border-color 0.2s;
       }
+      input[type="text"]:focus { border-color: var(--cor-primaria); }
+
       button {
-        width: 100%; padding: 16px;
+        width: 100%; padding: 18px;
         background-color: var(--cor-primaria);
-        color: white; border: none; border-radius: 8px;
-        font-size: 16px; font-weight: 700; text-transform: uppercase;
-        cursor: pointer; transition: transform 0.1s;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        color: white; border: none; border-radius: 10px;
+        font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+        cursor: pointer; transition: all 0.2s;
+        box-shadow: var(--sombra-padrao);
         text-shadow: none; flex-shrink: 0; margin-top: auto;
       }
-      button:active { transform: scale(0.98); }
-      button.secondary { background-color: #555; margin-top: 10px; }
+      button:active { transform: scale(0.97); }
+      button:disabled { background-color: #555; cursor: not-allowed; opacity: 0.8; }
+      button.secondary { background-color: #444; margin-top: 10px; padding: 12px; font-size: 14px; }
 
-      /* CARDS CONVIDADOS */
-      .convidado-item { background: var(--cor-fundo-card); border-radius: 10px; padding: 15px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-shadow: none; }
-      .convidado-item:last-child { margin-bottom: 5px; }
-      .convidado-item p.nome { margin: 0 0 5px; color: #333; font-weight: 700; font-size: 16px; }
-      .convidado-item .info-extra { font-size: 12px; color: #666; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
-      .radio-group { display: flex; background: #EEE; border-radius: 8px; padding: 3px; }
+      /* --- CARDS CONVIDADOS --- */
+      .convidado-item { 
+        background: var(--cor-fundo-card); border-radius: 12px; padding: 15px; 
+        margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); text-shadow: none; 
+        border-left: 4px solid var(--cor-primaria);
+      }
+      .convidado-item p.nome { margin: 0 0 5px; color: var(--cor-texto-escuro); font-weight: 700; font-size: 16px; }
+      .convidado-item .info-extra { font-size: 11px; color: var(--cor-texto-suave); margin-bottom: 10px; display: flex; gap: 6px; flex-wrap: wrap; text-transform: uppercase; font-weight: 600; }
+      
+      .radio-group { display: flex; background: #EEE; border-radius: 8px; padding: 4px; gap: 4px; }
       .radio-group input { display: none; }
-      .radio-group label { flex: 1; text-align: center; padding: 12px 5px; border-radius: 6px; font-size: 13px; font-weight: 600; color: #555; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
-      .radio-group input[value="Confirmado"]:checked + label { background: var(--cor-primaria); color: white; }
-      .radio-group input[value="Recusado"]:checked + label { background: var(--cor-recusar); color: white; }
+      .radio-group label { 
+        flex: 1; text-align: center; padding: 10px 5px; border-radius: 6px; 
+        font-size: 13px; font-weight: 600; color: #777; cursor: pointer; 
+        display: flex; align-items: center; justify-content: center; gap: 5px; 
+        transition: all 0.2s;
+      }
+      .radio-group input[value="Confirmado"]:checked + label { background: var(--cor-primaria); color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+      .radio-group input[value="Recusado"]:checked + label { background: var(--cor-recusar); color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
-      /* --- CONTADOR ORIGINAL --- */
-      #countdown-container { margin-bottom: 20px; text-align: center; flex-shrink: 0; }
-      .countdown-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #FFF; margin-bottom: 8px; opacity: 0.9; }
-      .countdown-footer { font-size: 11px; color: #EEE; margin-top: 8px; font-style: italic; opacity: 0.8; }
+      /* --- CONTADOR --- */
+      #countdown-container { margin-bottom: 25px; text-align: center; flex-shrink: 0; }
+      .countdown-title { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #EEE; margin-bottom: 10px; opacity: 0.9; }
+      .countdown-footer { font-size: 11px; color: #DDD; margin-top: 10px; font-style: italic; opacity: 0.8; }
       #countdown { display: flex; justify-content: center; gap: 15px; }
-      .time-block { display: flex; flex-direction: column; align-items: center; }
-      .numero { font-size: 28px; font-weight: 700; line-height: 1; color: #FFF; }
-      .label { font-size: 10px; text-transform: uppercase; opacity: 0.8; margin-top: 2px; }
+      .time-block { display: flex; flex-direction: column; align-items: center; min-width: 45px; }
+      .numero { font-size: 32px; font-weight: 700; line-height: 1; color: #FFF; font-variant-numeric: tabular-nums; }
+      .label { font-size: 9px; text-transform: uppercase; opacity: 0.8; margin-top: 4px; letter-spacing: 1px; }
 
-      #loading, #mensagem { text-align: center; padding: 15px; border-radius: 8px; margin-top: 10px; font-weight: 600; text-shadow: none; }
-      #loading { background: rgba(255,255,255,0.9); color: #333; }
+      /* --- STATUS E ALERTAS --- */
+      #loading, #mensagem { text-align: center; padding: 12px; border-radius: 8px; margin-top: 10px; font-weight: 600; text-shadow: none; font-size: 14px; }
+      #loading { background: rgba(255,255,255,0.95); color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
       #mensagem { display: none; }
+      
+      /* --- TELA SUCESSO --- */
       #telaSucesso { text-align: center; justify-content: center; height: 100%; }
-      #telaSucesso h2 { font-size: 28px; margin-bottom: 10px; color: #FFF; }
-      #telaSucesso p { font-size: 16px; opacity: 0.9; }
-      #telaSucesso a { color: #FFF; font-weight: 700; margin-top: 20px; display: inline-block; font-size: 18px; }
+      #telaSucesso h2 { font-size: 32px; margin-bottom: 10px; color: #FFF; }
+      #telaSucesso p { font-size: 16px; opacity: 0.95; margin-bottom: 5px; }
+      #telaSucesso a { 
+        color: #FFF; font-weight: 700; margin-top: 25px; display: inline-block; 
+        font-size: 14px; text-decoration: none; border-bottom: 1px dashed #FFF; padding-bottom: 2px; 
+      }
 
     </style>
   </head>
@@ -155,37 +180,37 @@
 
       <div id="conteudo-ativo">
         <div id="countdown-container">
-          <div class="countdown-title">Encerramento das Confirmações em:</div>
+          <div class="countdown-title">Confirmações encerram em:</div>
           <div id="countdown">
             <div class="time-block"><span id="days" class="numero">--</span><span class="label">Dias</span></div>
             <div class="time-block"><span id="hours" class="numero">--</span><span class="label">Hs</span></div>
             <div class="time-block"><span id="minutes" class="numero">--</span><span class="label">Min</span></div>
             <div class="time-block"><span id="seconds" class="numero">--</span><span class="label">Seg</span></div>
           </div>
-          <div class="countdown-footer">(Prazo final: <span id="lblPrazo">10/01/2026</span>)</div>
+          <div class="countdown-footer">Prazo final: <strong id="lblPrazo">01/02/2026</strong></div>
         </div>
         
         <div id="login">
-          <p style="text-align:center; margin-bottom:10px; opacity:0.9; font-size:14px;">Digite o código do convite:</p>
-          <input type="text" id="codigoInput" placeholder="WS-00-00" maxlength="10" onkeyup="this.value = this.value.toUpperCase();">
+          <p style="text-align:center; margin-bottom:12px; opacity:0.9; font-size:14px; font-weight: 500;">Digite o código do seu convite:</p>
+          <input type="text" id="codigoInput" placeholder="WS-RJ-123" maxlength="9" inputmode="text" autocomplete="off">
           <button id="btnBuscar" onclick="buscar()">Confirmar Presença</button>
         </div>
       </div>
 
       <div id="listaConvidados">
-        <p style="text-align:center; margin-bottom:10px; font-size:13px; opacity:0.9; flex-shrink: 0;">
-          Confirme quem da família irá comparecer:
+        <p style="text-align:center; margin-bottom:15px; font-size:14px; opacity:0.95; flex-shrink: 0;">
+          Selecione quem irá comparecer:
         </p>
         <div id="nomesContainer"></div>
         <button id="btnConfirmar" onclick="enviarConfirmacao()">Salvar Confirmação</button>
       </div>
 
       <div id="painelAdmin">
-        <p style="text-align:center; margin-bottom:15px; font-size:16px; font-weight:700;">📊 Sala de Controle</p>
+        <p style="text-align:center; margin-bottom:15px; font-size:16px; font-weight:700;">📊 Gestão de Convidados</p>
         <div class="dashboard-grid">
           
           <div class="stat-card full-width destaque">
-            <span class="stat-titulo">Total de Convidados</span><span class="stat-valor" id="st_total">--</span>
+            <span class="stat-titulo">Total Lista</span><span class="stat-valor" id="st_total">--</span>
           </div>
           <div class="stat-card">
             <span class="stat-titulo">Confirmados</span><span class="stat-valor c-verde" id="st_confirmados">--</span>
@@ -198,22 +223,21 @@
           </div>
           <div class="stat-card" style="border: 1px solid #0056b3">
             <span class="stat-titulo">Entregues S/ Resp</span><span class="stat-valor c-azul" id="st_entregues">--</span>
-             <span class="stat-obs">Col K = "s"</span>
           </div>
 
           <div class="stat-card full-width">
-             <span class="stat-titulo">📅 Alterar Prazo Final</span>
+             <span class="stat-titulo">📅 Alterar Prazo</span>
              <div style="display:flex; gap:5px; align-items:center; margin-top:5px;">
-                <input type="date" id="adminData" class="admin-input">
-                <button class="button admin-btn" onclick="salvarData()">Salvar</button>
+                <input type="date" id="adminData" class="admin-input" style="margin:0;">
+                <button class="button admin-btn" onclick="salvarData()">OK</button>
              </div>
           </div>
 
           <div class="stat-card full-width">
-             <span class="stat-titulo">➕ Novo Convidado</span>
-             <input type="text" id="novoNome" class="admin-input" placeholder="Nome Completo">
+             <span class="stat-titulo">➕ Adicionar Convidado</span>
+             <input type="text" id="novoNome" class="admin-input" placeholder="Nome Completo" style="text-align:left; text-transform:none; font-weight:400; font-size:14px;">
              <div style="display:flex; gap:5px;">
-               <input type="text" id="novoCodigo" class="admin-input" placeholder="Cód Família">
+               <input type="text" id="novoCodigo" class="admin-input" placeholder="WS-RJ-123" style="text-align:center; text-transform:uppercase;">
                <select id="novoLado" class="admin-input">
                  <option value="Willian">Willian</option>
                  <option value="Sara">Sara</option>
@@ -227,44 +251,63 @@
         <button class="secondary" onclick="sairAdmin()">Sair do Painel</button>
       </div>
 
-      <div id="conteudo-encerrado" style="display:none; text-align:center; justify-content: center; height: 100%;">
-        <h2 style="color:white;">Prazo Encerrado</h2>
-        <p>As confirmações pelo site estão fechadas.</p>
+      <div id="conteudo-encerrado" style="display:none; text-align:center; flex-direction:column; justify-content: center; height: 100%;">
+        <h2 style="color:white; font-size: 28px;">Prazo Encerrado</h2>
+        <p style="font-size: 16px;">As confirmações pelo site estão fechadas.<br>Entre em contato com os noivos.</p>
       </div>
 
       <div id="loading" style="display:none;">Carregando...</div>
       <div id="mensagem"></div>
 
-      <div id="telaSucesso" style="display:none;">
-        <h2>Salvo! ✅</h2>
-        <p>Sua presença foi registrada.</p>
-        <p><a href="#" onclick="reiniciar(event)">Sair / Outro Código</a></p>
+      <div id="telaSucesso">
+        <div style="font-size: 60px; margin-bottom: 10px;">✅</div>
+        <h2>Confirmado!</h2>
+        <p>Sua resposta foi salva com sucesso.</p>
+        <p>Nos vemos no grande dia!</p>
+        <a href="#" onclick="reiniciar(event)">Voltar ao Início</a>
       </div>
     </div>
 
     <script>
-      // --- COLOQUE SUA URL AQUI ---
+      // CONFIGURAÇÃO
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbySc_m4-r0UiREV5certyoh4uf3QA6uM4LbttTma7R9sxAG6RijzQ8VloXqRvUrgdPu/exec"; 
-      // -----------------------------
+      
+      // EXEMPLO NO NOVO FORMATO (2 LETRAS - 2 LETRAS - 3 NUMEROS)
+      const FICTITIOUS_CODE = "WS-RJ-123";
+      
+      // Defina sua data limite real aqui
+      let deadline = new Date(2026, 1, 1, 0, 0, 0).getTime(); 
 
-      let deadline = new Date(2026, 0, 11, 0, 0, 0).getTime(); // Default
-      const fictitiousCode = "WS-02-26";
+      // 1. MÁSCARA INTELIGENTE (Input) - ADAPTADA PARA XX-XX-000
+      const inputCodigo = document.getElementById('codigoInput');
+      
+      inputCodigo.addEventListener('input', function(e) {
+          // Limpa: TUDO que não for letra ou número sai
+          let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
 
+          // Limita a 7 caracteres úteis (Ex: WSRJ123)
+          if (v.length > 7) v = v.slice(0, 7);
+
+          // Formatação Visual: XX-XX-XXX
+          if (v.length > 2) v = v.slice(0, 2) + '-' + v.slice(2);
+          if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5);
+
+          e.target.value = v;
+      });
+
+      // --- CONTADOR (Mantido) ---
       function iniciarContador() {
         const now = new Date().getTime();
         const diff = deadline - now;
-        
         if (diff < 0) {
           document.getElementById('conteudo-ativo').style.display = 'none';
           document.getElementById('conteudo-encerrado').style.display = 'flex';
           return;
         }
-
         const d = Math.floor(diff / (1000 * 60 * 60 * 24));
         const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const s = Math.floor((diff % (1000 * 60)) / 1000);
-        
         const f = n => n < 10 ? '0'+n : n;
         document.getElementById('days').innerText = f(d);
         document.getElementById('hours').innerText = f(h);
@@ -274,127 +317,127 @@
       setInterval(iniciarContador, 1000);
       iniciarContador();
 
-      // NOVA FUNÇÃO DE COMUNICAÇÃO
+      // --- FUNÇÃO DE ENVIO ---
       async function enviarDados(action, dados = {}) {
         const body = JSON.stringify({ action: action, ...dados });
         return fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: body
+          method: 'POST', body: body
         }).then(response => response.json());
       }
 
+      // 2. FUNÇÃO BUSCAR (Lógica Robusta para XX-XX-000)
       function buscar() {
-        var codigo = document.getElementById('codigoInput').value.trim().toUpperCase();
-        if (!codigo) return alertMsg("Digite o código!", true);
-        if (codigo === fictitiousCode) return alertMsg("Este é apenas um exemplo. Use o seu código.", true);
+        var rawValue = document.getElementById('codigoInput').value.toUpperCase();
         
-        mostrarLoading(true, "Verificando...");
+        // Remove tudo que não é letra/número
+        var limpo = rawValue.replace(/[^A-Z0-9]/g, '');
+
+        // Validação: Precisa ter 7 caracteres (Ex: WSRJ123)
+        if (limpo.length < 7) return alertMsg("Código incompleto.", true);
+        
+        // Formata para o padrão da planilha (XX-XX-XXX)
+        // 0,2 (WS) + 2,4 (RJ) + 4,7 (123)
+        var codigoFormatado = limpo.slice(0,2) + '-' + limpo.slice(2,4) + '-' + limpo.slice(4,7);
+
+        if (codigoFormatado === FICTITIOUS_CODE) return alertMsg("Código de exemplo. Use o seu código real.", true);
+        
+        toggleLoading(true, "Verificando convite...");
         document.getElementById('btnBuscar').disabled = true;
         
-        enviarDados('buscar', { codigo: codigo })
+        enviarDados('buscar', { codigo: codigoFormatado })
           .then(r => processarLogin(r))
           .catch(e => tratarErro(e));
       }
 
       function processarLogin(r) {
-        mostrarLoading(false);
+        toggleLoading(false);
         document.getElementById('btnBuscar').disabled = false;
-        
         if (r.error) return alertMsg(r.error, true);
-        
-        // Se a planilha mandou uma data limite atualizada, usamos ela
-        if (r.dataLimite) {
-            atualizarPrazoVisual(r.dataLimite);
-        }
-
+        if (r.dataLimite) atualizarPrazoVisual(r.dataLimite);
         if (r.isAdmin) { abrirPainelAdmin(); return; }
         mostrarListaConvidados(r.convidados);
       }
       
       function atualizarPrazoVisual(dataString) {
-          // Tenta converter string da planilha para data JS
           let novaData = new Date(dataString);
           if (!isNaN(novaData)) {
              deadline = novaData.getTime();
-             // Formata para DD/MM/AAAA para exibir no texto
              let dia = String(novaData.getDate()).padStart(2, '0');
              let mes = String(novaData.getMonth() + 1).padStart(2, '0');
-             let ano = novaData.getFullYear();
-             document.getElementById('lblPrazo').innerText = `${dia}/${mes}/${ano}`;
-             iniciarContador(); // Recalcula
+             document.getElementById('lblPrazo').innerText = `${dia}/${mes}/${novaData.getFullYear()}`;
+             iniciarContador(); 
           }
       }
 
+      // --- ADMIN ---
       function abrirPainelAdmin() {
-        document.getElementById('conteudo-ativo').style.display = 'none';
-        document.getElementById('painelAdmin').style.display = 'flex';
+        switchView('painelAdmin');
         carregarDashboard();
       }
       
       function carregarDashboard() {
-        mostrarLoading(true, "Carregando Sala de Controle...");
+        toggleLoading(true, "Atualizando dados...");
         enviarDados('dashboard')
           .then(d => {
-             mostrarLoading(false);
+             toggleLoading(false);
              if(d.error) return alertMsg(d.error, true);
-             
-             // Preencher stats
              document.getElementById('st_total').innerText = d.total;
              document.getElementById('st_confirmados').innerText = d.confirmados;
              document.getElementById('st_recusados').innerText = d.recusados;
              document.getElementById('st_pendentes').innerText = d.pendentes;
              document.getElementById('st_entregues').innerText = d.entreguesPendentes || 0;
-             
-             // Preencher input de data se existir
              if(d.configData) {
-                 // Formato esperado pelo input date: yyyy-mm-dd
-                 // A planilha pode mandar dd/mm/yyyy. Vamos tentar adaptar.
-                 // Se vier formato ISO, ok. Se não, deixamos em branco para o usuário setar.
-                 let dt = new Date(d.configData);
-                 if(!isNaN(dt)) {
-                     document.getElementById('adminData').value = dt.toISOString().split('T')[0];
-                 }
+                let dt = new Date(d.configData);
+                if(!isNaN(dt)) document.getElementById('adminData').value = dt.toISOString().split('T')[0];
              }
-          })
-          .catch(e => tratarErro(e));
+          }).catch(e => tratarErro(e));
       }
       
       function salvarData() {
           let novaData = document.getElementById('adminData').value;
-          if(!novaData) return alertMsg("Escolha uma data", true);
-          mostrarLoading(true, "Salvando Data...");
+          if(!novaData) return alertMsg("Escolha uma data válida", true);
+          toggleLoading(true, "Salvando...");
           enviarDados('salvarConfig', { novaData: novaData }).then(r => {
-              mostrarLoading(false);
-              alertMsg("Data atualizada com sucesso!");
+              toggleLoading(false);
+              alertMsg("Data atualizada!");
           });
       }
       
       function adicionarNovo() {
+          // Formata código novo: remove sujeira e reaplica traços
+          let codRaw = document.getElementById('novoCodigo').value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+          let codFinal = codRaw;
+          
+          if(codRaw.length === 7) {
+             codFinal = codRaw.slice(0,2) + '-' + codRaw.slice(2,4) + '-' + codRaw.slice(4,7);
+          }
+
           let dados = {
               nome: document.getElementById('novoNome').value,
-              codigo: document.getElementById('novoCodigo').value,
+              codigo: codFinal,
               lado: document.getElementById('novoLado').value,
-              parentesco: "Convidado",
-              funcao: "Convidado"
+              parentesco: "Convidado", funcao: "Convidado"
           };
-          if(!dados.nome || !dados.codigo) return alertMsg("Preencha Nome e Código", true);
+          // Validação simples: precisa de nome e código com tamanho mínimo visual (contando traços)
+          if(!dados.nome || dados.codigo.length < 9) return alertMsg("Preencha Nome e Código corretamente", true);
           
-          mostrarLoading(true, "Cadastrando...");
+          toggleLoading(true, "Cadastrando...");
           enviarDados('adicionarConvidado', { dados: dados }).then(r => {
-              mostrarLoading(false);
+              toggleLoading(false);
               alertMsg("Convidado adicionado!");
               document.getElementById('novoNome').value = "";
-              carregarDashboard(); // Atualiza números
+              document.getElementById('novoCodigo').value = "";
+              carregarDashboard(); 
           });
       }
 
       function sairAdmin() {
-        document.getElementById('painelAdmin').style.display = 'none';
-        document.getElementById('conteudo-ativo').style.display = 'flex';
+        switchView('conteudo-ativo');
         document.getElementById('codigoInput').value = '';
         alertMsg("");
       }
 
+      // --- LISTA CONVIDADOS ---
       function mostrarListaConvidados(convidados) {
         var html = "";
         convidados.forEach(c => {
@@ -408,50 +451,45 @@
           
           html += `
             <div class="convidado-item">
-              <p class="nome">${c.nome} ${emoji}</p>
-              ${extra.length ? `<div class="info-extra"><span>${extra.join('</span><span>')}</span></div>` : ''}
+              <p class="nome">${emoji} ${c.nome}</p>
+              ${extra.length ? `<div class="info-extra"><span>${extra.join(' • ')}</span></div>` : ''}
               <div class="radio-group">
                 <input type="radio" name="${grp}" id="${grp}_y" value="Confirmado" data-linha="${c.linha}" ${isConf}>
-                <label for="${grp}_y">✅ Vou</label>
+                <label for="${grp}_y">Vou ✅</label>
                 <input type="radio" name="${grp}" id="${grp}_n" value="Recusado" data-linha="${c.linha}" ${isRec}>
-                <label for="${grp}_n">❌ Não vou</label>
+                <label for="${grp}_n">Não vou ❌</label>
               </div>
             </div>`;
         });
         document.getElementById('nomesContainer').innerHTML = html;
-        document.getElementById('conteudo-ativo').style.display = 'none';
-        document.getElementById('listaConvidados').style.display = 'flex';
+        switchView('listaConvidados');
         alertMsg("");
       }
 
       function enviarConfirmacao() {
         var btn = document.getElementById('btnConfirmar');
-        btn.disabled = true; btn.innerText = "SALVANDO...";
-        mostrarLoading(true, "Salvando respostas...");
+        btn.disabled = true; btn.innerText = "Salvando...";
+        toggleLoading(true, "Enviando respostas...");
         var respostas = [];
         document.querySelectorAll('#nomesContainer input:checked').forEach(input => {
           respostas.push({ linha: parseInt(input.dataset.linha), status: input.value });
         });
-        
         enviarDados('atualizar', { respostas: respostas })
-          .then(res => sucessoEnvio(res))
-          .catch(e => tratarErro(e));
+          .then(res => {
+             toggleLoading(false);
+             if(res.error) throw new Error(res.error);
+             switchView('telaSucesso');
+             alertMsg("");
+          }).catch(e => tratarErro(e));
       }
 
-      function sucessoEnvio(r) {
-        mostrarLoading(false);
-        if(r.error) { tratarErro(new Error(r.error)); return; }
-        document.getElementById('listaConvidados').style.display = 'none';
-        document.getElementById('telaSucesso').style.display = 'flex';
-        alertMsg("");
-      }
-
+      // --- UTILITÁRIOS ---
       function tratarErro(e) {
-        mostrarLoading(false);
+        toggleLoading(false);
         document.getElementById('btnBuscar').disabled = false;
         var btnConf = document.getElementById('btnConfirmar');
-        if(btnConf) { btnConf.disabled = false; btnConf.innerText = "SALVAR CONFIRMAÇÃO"; }
-        alertMsg("⚠️ " + (e.message || "Erro"), true);
+        if(btnConf) { btnConf.disabled = false; btnConf.innerText = "Salvar Confirmação"; }
+        alertMsg("⚠️ " + (e.message || "Erro de conexão"), true);
       }
 
       function alertMsg(msg, erro=false) {
@@ -462,19 +500,24 @@
         div.style.color = erro ? '#a00' : '#0a0';
       }
 
-      function mostrarLoading(show, txt) {
+      function toggleLoading(show, txt) {
         var div = document.getElementById('loading');
         div.style.display = show ? 'block' : 'none';
         if(txt) div.innerText = txt;
+      }
+      
+      function switchView(viewId) {
+         ['conteudo-ativo', 'listaConvidados', 'painelAdmin', 'telaSucesso', 'conteudo-encerrado'].forEach(id => {
+             document.getElementById(id).style.display = (id === viewId) ? 'flex' : 'none';
+         });
       }
 
       function reiniciar(e) {
         e.preventDefault();
         document.getElementById('codigoInput').value = "";
         var btnConf = document.getElementById('btnConfirmar');
-        if(btnConf) { btnConf.disabled = false; btnConf.innerText = "SALVAR CONFIRMAÇÃO"; }
-        document.getElementById('telaSucesso').style.display = 'none';
-        document.getElementById('conteudo-ativo').style.display = 'flex';
+        if(btnConf) { btnConf.disabled = false; btnConf.innerText = "Salvar Confirmação"; }
+        switchView('conteudo-ativo');
         alertMsg(""); 
       }
     </script>
