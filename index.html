@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
       :root {
@@ -16,8 +17,7 @@
         --cor-texto-escuro: #333333;
         --cor-texto-suave: #666666;
         --cor-branco: #FFFFFF; 
-        --cor-fundo-card: rgba(255, 255, 255, 0.96);
-        --sombra-padrao: 0 4px 15px rgba(0,0,0,0.25);
+        --cor-fundo-card: rgba(255, 255, 255, 0.95);
         --glass-bg: rgba(255, 255, 255, 0.1);
         --glass-border: rgba(255, 255, 255, 0.2);
       }
@@ -51,6 +51,8 @@
         height: 85vh; 
         border: 1px solid var(--glass-border);
         transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
       }
       
       @media (max-width: 480px) {
@@ -63,77 +65,52 @@
         }
       }
 
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar { width: 4px; }
+      ::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 2px; }
+
       .header { text-align: center; padding-bottom: 15px; border-bottom: 1px solid var(--glass-border); margin-bottom: 15px; flex-shrink: 0; }
       .header h1 { margin: 0; font-size: 26px; font-weight: 800; color: #FFF; letter-spacing: 1px; }
       .header p { margin: 5px 0 0; font-size: 13px; color: #EEE; text-transform: uppercase; letter-spacing: 3px; font-weight: 500; }
 
-      /* Estrutura de Layout */
-      #conteudo-ativo, #telaSucesso, #painelAdmin, #listaConvidados { 
-        width: 100%; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; 
-      }
-      
-      #listaConvidados, #painelAdmin, #telaSucesso { display: none; } 
+      /* Gerenciamento de Telas (Views) */
+      .view-section { width: 100%; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; display: none; }
+      .view-active { display: flex; }
 
-      #nomesContainer {
-        flex-grow: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 15px;
-        scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.5) transparent;
-      }
-
-      /* --- PAINEL ADMIN --- */
-      .dashboard-grid {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-        overflow-y: auto; padding-bottom: 20px; scrollbar-width: none; 
-      }
-      .stat-card {
-        background: var(--cor-fundo-card); padding: 15px; border-radius: 12px;
-        text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-shadow: none;
-        display: flex; flex-direction: column; justify-content: center;
-      }
-      .stat-card.full-width { grid-column: span 2; }
-      .stat-card.destaque { border: 2px solid var(--cor-primaria); background: #fff; }
-      .stat-titulo { font-size: 10px; text-transform: uppercase; color: #666; margin-bottom: 5px; font-weight: 700; letter-spacing: 0.5px; }
-      .stat-valor { font-size: 26px; font-weight: 800; color: #333; line-height: 1; }
-      .stat-obs { font-size: 9px; color: #888; margin-top: 5px; }
-      .c-verde { color: var(--cor-primaria); } .c-vermelho { color: var(--cor-recusar); } .c-azul { color: #0056b3; }
-      
-      .admin-input { 
-        width: 100%; padding: 10px; margin-bottom: 5px; border: 1px solid #ccc; 
-        border-radius: 6px; font-size: 14px; color: #333; text-shadow: none; 
-      }
-      .admin-btn { padding: 8px 15px; font-size: 12px; margin-top: 5px; width: auto; display: inline-block; }
-
-      /* --- INPUTS E BOTOES GERAIS --- */
-      input[type="text"] {
+      /* Inputs e Botões */
+      input[type="text"], input[type="date"], select {
         width: 100%; padding: 15px;
         border: 2px solid rgba(255,255,255,0.3);
         background: rgba(255,255,255,0.95);
-        color: var(--cor-texto-escuro); border-radius: 10px; font-size: 18px;
-        text-align: center; font-weight: 700; text-transform: uppercase;
-        margin-bottom: 15px; text-shadow: none; transition: border-color 0.2s;
+        color: var(--cor-texto-escuro); border-radius: 10px; font-size: 16px;
+        font-weight: 600; margin-bottom: 10px; text-shadow: none; 
+        transition: border-color 0.2s;
       }
       input[type="text"]:focus { border-color: var(--cor-primaria); }
 
       button {
-        width: 100%; padding: 18px;
+        width: 100%; padding: 16px;
         background-color: var(--cor-primaria);
         color: white; border: none; border-radius: 10px;
         font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
         cursor: pointer; transition: all 0.2s;
-        box-shadow: var(--sombra-padrao);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         text-shadow: none; flex-shrink: 0; margin-top: auto;
       }
       button:active { transform: scale(0.97); }
       button:disabled { background-color: #555; cursor: not-allowed; opacity: 0.8; }
+      
       button.secondary { background-color: #444; margin-top: 10px; padding: 12px; font-size: 14px; }
 
-      /* --- CARDS CONVIDADOS --- */
+      /* Cards de Convidados (Usuário) */
+      #nomesContainer { flex-grow: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 15px; }
       .convidado-item { 
         background: var(--cor-fundo-card); border-radius: 12px; padding: 15px; 
         margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); text-shadow: none; 
         border-left: 4px solid var(--cor-primaria);
       }
       .convidado-item p.nome { margin: 0 0 5px; color: var(--cor-texto-escuro); font-weight: 700; font-size: 16px; }
-      .convidado-item .info-extra { font-size: 11px; color: var(--cor-texto-suave); margin-bottom: 10px; display: flex; gap: 6px; flex-wrap: wrap; text-transform: uppercase; font-weight: 600; }
       
       .radio-group { display: flex; background: #EEE; border-radius: 8px; padding: 4px; gap: 4px; }
       .radio-group input { display: none; }
@@ -143,42 +120,36 @@
         display: flex; align-items: center; justify-content: center; gap: 5px; 
         transition: all 0.2s;
       }
-      .radio-group input[value="Confirmado"]:checked + label { background: var(--cor-primaria); color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-      .radio-group input[value="Recusado"]:checked + label { background: var(--cor-recusar); color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+      .radio-group input[value="Confirmado"]:checked + label { background: var(--cor-primaria); color: white; }
+      .radio-group input[value="Recusado"]:checked + label { background: var(--cor-recusar); color: white; }
 
-      /* --- CONTADOR --- */
+      /* Countdown */
       #countdown-container { margin-bottom: 25px; text-align: center; flex-shrink: 0; }
       .countdown-title { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #EEE; margin-bottom: 10px; opacity: 0.9; }
-      .countdown-footer { font-size: 11px; color: #DDD; margin-top: 10px; font-style: italic; opacity: 0.8; }
       #countdown { display: flex; justify-content: center; gap: 15px; }
       .time-block { display: flex; flex-direction: column; align-items: center; min-width: 45px; }
       .numero { font-size: 32px; font-weight: 700; line-height: 1; color: #FFF; font-variant-numeric: tabular-nums; }
-      .label { font-size: 9px; text-transform: uppercase; opacity: 0.8; margin-top: 4px; letter-spacing: 1px; }
+      .label { font-size: 9px; text-transform: uppercase; opacity: 0.8; margin-top: 4px; }
 
-      /* --- STATUS E ALERTAS --- */
+      /* Loadings e Mensagens */
       #loading, #mensagem { text-align: center; padding: 12px; border-radius: 8px; margin-top: 10px; font-weight: 600; text-shadow: none; font-size: 14px; }
-      #loading { background: rgba(255,255,255,0.95); color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+      #loading { background: rgba(255,255,255,0.95); color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: none; position: absolute; bottom: 20px; left: 20px; right: 20px; z-index: 200; }
       #mensagem { display: none; }
       
-      /* --- TELA SUCESSO --- */
-      #telaSucesso { text-align: center; justify-content: center; height: 100%; }
+      #telaSucesso { text-align: center; justify-content: center; height: 100%; flex-direction: column; }
       #telaSucesso h2 { font-size: 32px; margin-bottom: 10px; color: #FFF; }
-      #telaSucesso p { font-size: 16px; opacity: 0.95; margin-bottom: 5px; }
-      #telaSucesso a { 
-        color: #FFF; font-weight: 700; margin-top: 25px; display: inline-block; 
-        font-size: 14px; text-decoration: none; border-bottom: 1px dashed #FFF; padding-bottom: 2px; 
-      }
 
     </style>
   </head>
   <body>
     <div id="app">
-      <div class="header">
+      
+      <div class="header" id="mainHeader">
         <h1>Willian & Sara</h1>
         <p>Fevereiro 2026</p>
       </div>
 
-      <div id="conteudo-ativo">
+      <div id="view-login" class="view-section view-active">
         <div id="countdown-container">
           <div class="countdown-title">Confirmações encerram em:</div>
           <div id="countdown">
@@ -187,127 +158,76 @@
             <div class="time-block"><span id="minutes" class="numero">--</span><span class="label">Min</span></div>
             <div class="time-block"><span id="seconds" class="numero">--</span><span class="label">Seg</span></div>
           </div>
-          <div class="countdown-footer">Prazo final: <strong id="lblPrazo">10/01/2026</strong></div>
+          <div style="font-size:11px; margin-top:10px; opacity:0.8;">Prazo: <strong id="lblPrazo">10/01/2026</strong></div>
         </div>
         
-        <div id="login">
+        <div>
           <p style="text-align:center; margin-bottom:12px; opacity:0.9; font-size:14px; font-weight: 500;">Digite o código do seu convite:</p>
-          <input type="text" id="codigoInput" placeholder="WS-MP-123" maxlength="9" inputmode="text" autocomplete="off">
+          <input type="text" id="codigoInput" placeholder="WS-00-00" maxlength="10" autocomplete="off" style="text-align:center; text-transform:uppercase; letter-spacing:1px;">
           <button id="btnBuscar" onclick="buscar()">Confirmar Presença</button>
         </div>
       </div>
 
-      <div id="listaConvidados">
-        <p style="text-align:center; margin-bottom:15px; font-size:14px; opacity:0.95; flex-shrink: 0;">
-          Selecione quem irá comparecer:
-        </p>
+      <div id="view-rsvp" class="view-section">
+        <p style="text-align:center; margin-bottom:15px; font-size:14px; opacity:0.95; flex-shrink: 0;">Selecione quem irá comparecer:</p>
         <div id="nomesContainer"></div>
         <button id="btnConfirmar" onclick="enviarConfirmacao()">Salvar Confirmação</button>
+        <button class="secondary" onclick="sair()">Voltar</button>
       </div>
 
-      <div id="painelAdmin">
-        <p style="text-align:center; margin-bottom:15px; font-size:16px; font-weight:700;">📊 Gestão de Convidados</p>
-        <div class="dashboard-grid">
-          
-          <div class="stat-card full-width destaque">
-            <span class="stat-titulo">Total Lista</span><span class="stat-valor" id="st_total">--</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-titulo">Confirmados</span><span class="stat-valor c-verde" id="st_confirmados">--</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-titulo">Recusados</span><span class="stat-valor c-vermelho" id="st_recusados">--</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-titulo">Pendentes</span><span class="stat-valor" id="st_pendentes">--</span>
-          </div>
-          <div class="stat-card" style="border: 1px solid #0056b3">
-            <span class="stat-titulo">Entregues S/ Resp</span><span class="stat-valor c-azul" id="st_entregues">--</span>
-          </div>
-
-          <div class="stat-card full-width">
-             <span class="stat-titulo">📅 Alterar Prazo</span>
-             <div style="display:flex; gap:5px; align-items:center; margin-top:5px;">
-                <input type="date" id="adminData" class="admin-input" style="margin:0;">
-                <button class="button admin-btn" onclick="salvarData()">OK</button>
-             </div>
-          </div>
-
-          <div class="stat-card full-width">
-             <span class="stat-titulo">➕ Adicionar Convidado</span>
-             <input type="text" id="novoNome" class="admin-input" placeholder="Nome Completo" style="text-align:left; text-transform:none; font-weight:400; font-size:14px;">
-             <div style="display:flex; gap:5px;">
-               <input type="text" id="novoCodigo" class="admin-input" placeholder="WS-RJ-12..." style="text-align:center; text-transform:uppercase;">
-               <select id="novoLado" class="admin-input">
-                 <option value="Willian">Willian</option>
-                 <option value="Sara">Sara</option>
-                 <option value="Ambos">Ambos</option>
-               </select>
-             </div>
-             <button class="button admin-btn" onclick="adicionarNovo()">Cadastrar</button>
-          </div>
-
-        </div>
-        <button class="secondary" onclick="sairAdmin()">Sair do Painel</button>
-      </div>
-
-      <div id="conteudo-encerrado" style="display:none; text-align:center; flex-direction:column; justify-content: center; height: 100%;">
-        <h2 style="color:white; font-size: 28px;">Prazo Encerrado</h2>
-        <p style="font-size: 16px;">As confirmações pelo site estão fechadas.<br>Entre em contato com os noivos.</p>
-      </div>
-
-      <div id="loading" style="display:none;">Carregando...</div>
-      <div id="mensagem"></div>
-
-      <div id="telaSucesso">
+      <div id="telaSucesso" class="view-section" style="display:none;">
         <div style="font-size: 60px; margin-bottom: 10px;">✅</div>
         <h2>Confirmado!</h2>
-        <p>Sua resposta foi salva com sucesso.</p>
-        <p>Nos vemos no grande dia!</p>
-        <a href="#" onclick="reiniciar(event)">Voltar ao Início</a>
+        <p>Sua resposta foi salva.</p>
+        <button class="secondary" style="background:transparent; border:1px solid #FFF; margin-top:20px;" onclick="sair()">Voltar ao Início</button>
       </div>
+
+      <div id="loading">Carregando...</div>
+      <div id="mensagem"></div>
     </div>
 
     <script>
-      // CONFIGURAÇÃO
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbySc_m4-r0UiREV5certyoh4uf3QA6uM4LbttTma7R9sxAG6RijzQ8VloXqRvUrgdPu/exec"; 
+      // ==========================================
+      // SEU LINK FIXO AQUI
+      // ==========================================
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwsg3trPiCdX59SL4xudGWKU5qwPxwq_PG71ENsbULaO40I9PzEGzYB78nwh9Ha1kGN/exec"; 
       
-      const FICTITIOUS_CODE = "WS-WS-123";
-      // Defina sua data limite real aqui
-      let deadline = new Date(2026, 0, 10, 0, 0, 0).getTime(); 
+      const SENHA_MESTRA = "ADMIN"; // SENHA PARA ACESSAR O PAINEL
+      let deadline = new Date(2026, 0, 11, 0, 0, 0).getTime(); 
 
-      // 1. MÁSCARA INTELIGENTE - Flexível (2 ou 3 números no final)
+      // --- MÁSCARA INTELIGENTE ---
+      // Permite digitar "ADMIN" sem colocar traços, mas coloca traços em convites normais
       const inputCodigo = document.getElementById('codigoInput');
-      
       inputCodigo.addEventListener('input', function(e) {
-          // Limpa tudo que não for alfanumérico
           let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+          
+          // LÓGICA DE CORREÇÃO:
+          // Se o que o usuário está digitando (ex: "AD", "ADM") for o começo da senha mestra,
+          // NÃO aplica a máscara de traços.
+          if(SENHA_MESTRA.startsWith(v)) {
+              e.target.value = v;
+              return;
+          }
 
-          // Limita ao máximo possível (4 letras + 3 números = 7 chars)
-          if (v.length > 7) v = v.slice(0, 7);
-
-          // Formatação Visual: XX-XX-XXX (ou XX)
-          // Adiciona primeiro traço
+          // Caso contrário (convite normal), aplica a máscara XX-XX-XX
+          if (v.length > 8) v = v.slice(0, 8);
           if (v.length > 2) v = v.slice(0, 2) + '-' + v.slice(2);
-          // Adiciona segundo traço
           if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5);
-
           e.target.value = v;
       });
 
-      // --- CONTADOR ---
       function iniciarContador() {
         const now = new Date().getTime();
         const diff = deadline - now;
         if (diff < 0) {
-          document.getElementById('conteudo-ativo').style.display = 'none';
-          document.getElementById('conteudo-encerrado').style.display = 'flex';
+          document.getElementById('countdown').innerHTML = "<div style='color:#FFF; font-weight:700'>PRAZO ENCERRADO</div>";
           return;
         }
         const d = Math.floor(diff / (1000 * 60 * 60 * 24));
         const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const s = Math.floor((diff % (1000 * 60)) / 1000);
+        
         const f = n => n < 10 ? '0'+n : n;
         document.getElementById('days').innerText = f(d);
         document.getElementById('hours').innerText = f(h);
@@ -317,159 +237,97 @@
       setInterval(iniciarContador, 1000);
       iniciarContador();
 
-      // --- FUNÇÃO DE ENVIO ---
-      async function enviarDados(action, dados = {}) {
-        const body = JSON.stringify({ action: action, ...dados });
-        return fetch(SCRIPT_URL, {
-          method: 'POST', body: body
-        }).then(response => response.json());
-      }
-
-      // 2. FUNÇÃO BUSCAR (Validação flexível)
-      function buscar() {
-        var rawValue = document.getElementById('codigoInput').value.toUpperCase();
+      // --- NAVEGAÇÃO ---
+      function switchView(viewName) {
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('view-active'));
+        const target = document.getElementById('view-' + viewName);
+        if(target) target.classList.add('view-active');
         
-        // Remove sujeira para validar tamanho real
-        var limpo = rawValue.replace(/[^A-Z0-9]/g, '');
-
-        // Aceita tamanho 6 (ex: WSRJ12) ou 7 (ex: WSRJ123)
-        if (limpo.length < 6) return alertMsg("Código incompleto.", true);
-        
-        // Formata para o padrão (XX-XX-restante)
-        var codigoFormatado = limpo.slice(0,2) + '-' + limpo.slice(2,4) + '-' + limpo.slice(4);
-
-        if (codigoFormatado === FICTITIOUS_CODE) return alertMsg("Código de exemplo. Use o seu código real.", true);
-        
-        toggleLoading(true, "Verificando convite...");
-        document.getElementById('btnBuscar').disabled = true;
-        
-        enviarDados('buscar', { codigo: codigoFormatado })
-          .then(r => processarLogin(r))
-          .catch(e => tratarErro(e));
+        const header = document.getElementById('mainHeader');
+        if(viewName === 'sucesso') {
+             document.getElementById('telaSucesso').style.display = 'flex';
+             header.style.display = 'none';
+        } else {
+             document.getElementById('telaSucesso').style.display = 'none';
+             header.style.display = 'block';
+        }
       }
 
-      function processarLogin(r) {
-        toggleLoading(false);
-        document.getElementById('btnBuscar').disabled = false;
-        if (r.error) return alertMsg(r.error, true);
-        if (r.dataLimite) atualizarPrazoVisual(r.dataLimite);
-        if (r.isAdmin) { abrirPainelAdmin(); return; }
-        mostrarListaConvidados(r.convidados);
-      }
-      
-      function atualizarPrazoVisual(dataString) {
-          let novaData = new Date(dataString);
-          if (!isNaN(novaData)) {
-             deadline = novaData.getTime();
-             let dia = String(novaData.getDate()).padStart(2, '0');
-             let mes = String(novaData.getMonth() + 1).padStart(2, '0');
-             document.getElementById('lblPrazo').innerText = `${dia}/${mes}/${novaData.getFullYear()}`;
-             iniciarContador(); 
-          }
-      }
-
-      // --- ADMIN ---
-      function abrirPainelAdmin() {
-        switchView('painelAdmin');
-        carregarDashboard();
-      }
-      
-      function carregarDashboard() {
-        toggleLoading(true, "Atualizando dados...");
-        enviarDados('dashboard')
-          .then(d => {
-             toggleLoading(false);
-             if(d.error) return alertMsg(d.error, true);
-             document.getElementById('st_total').innerText = d.total;
-             document.getElementById('st_confirmados').innerText = d.confirmados;
-             document.getElementById('st_recusados').innerText = d.recusados;
-             document.getElementById('st_pendentes').innerText = d.pendentes;
-             document.getElementById('st_entregues').innerText = d.entreguesPendentes || 0;
-             if(d.configData) {
-                let dt = new Date(d.configData);
-                if(!isNaN(dt)) document.getElementById('adminData').value = dt.toISOString().split('T')[0];
-             }
-          }).catch(e => tratarErro(e));
-      }
-      
-      function salvarData() {
-          let novaData = document.getElementById('adminData').value;
-          if(!novaData) return alertMsg("Escolha uma data válida", true);
-          toggleLoading(true, "Salvando...");
-          enviarDados('salvarConfig', { novaData: novaData }).then(r => {
-              toggleLoading(false);
-              alertMsg("Data atualizada!");
-          });
-      }
-      
-      function adicionarNovo() {
-          // Admin também aceita 6 ou 7 chars limpos
-          let codRaw = document.getElementById('novoCodigo').value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-          let codFinal = codRaw;
-          
-          if(codRaw.length >= 6) {
-             codFinal = codRaw.slice(0,2) + '-' + codRaw.slice(2,4) + '-' + codRaw.slice(4);
-          }
-
-          let dados = {
-              nome: document.getElementById('novoNome').value,
-              codigo: codFinal,
-              lado: document.getElementById('novoLado').value,
-              parentesco: "Convidado", funcao: "Convidado"
-          };
-          
-          // Validação visual (mínimo 8 chars: XX-XX-XX)
-          if(!dados.nome || dados.codigo.length < 8) return alertMsg("Preencha Nome e Código corretamente", true);
-          
-          toggleLoading(true, "Cadastrando...");
-          enviarDados('adicionarConvidado', { dados: dados }).then(r => {
-              toggleLoading(false);
-              alertMsg("Convidado adicionado!");
-              document.getElementById('novoNome').value = "";
-              document.getElementById('novoCodigo').value = "";
-              carregarDashboard(); 
-          });
-      }
-
-      function sairAdmin() {
-        switchView('conteudo-ativo');
+      function sair() {
         document.getElementById('codigoInput').value = '';
+        switchView('login');
         alertMsg("");
       }
 
-      // --- LISTA CONVIDADOS ---
+      // --- API COM TEXT/PLAIN PARA EVITAR CORS ---
+      async function enviarDados(action, dados = {}) {
+        const params = {
+            method: "POST",
+            body: JSON.stringify({ action: action, ...dados })
+        };
+        // fetch direto
+        return fetch(SCRIPT_URL, params).then(r => r.json());
+      }
+
+      // --- BUSCAR / LOGIN ---
+      function buscar() {
+        var rawValue = document.getElementById('codigoInput').value.toUpperCase();
+        var limpo = rawValue.replace(/[^A-Z0-9]/g, '');
+
+        // REDIRECIONAMENTO PARA O PAINEL DE CONTROLE
+        if(limpo === SENHA_MESTRA) {
+            // Certifique-se de que o arquivo admin.html está na mesma pasta/deploy
+            window.location.href = "admin.html"; 
+            return;
+        }
+
+        if (limpo.length < 5) return alertMsg("Código muito curto.", true);
+        
+        toggleLoading(true, "Verificando...");
+        enviarDados('buscar', { codigo: rawValue })
+          .then(r => {
+             toggleLoading(false);
+             if (r.error) return alertMsg(r.error, true);
+             if (r.dataLimite) atualizarPrazo(r.dataLimite);
+             mostrarListaConvidados(r.convidados);
+          })
+          .catch(e => tratarErro(e));
+      }
+
+      function atualizarPrazo(dataString) {
+          let novaData = new Date(dataString);
+          if (!isNaN(novaData)) {
+              deadline = novaData.getTime();
+              let dia = String(novaData.getDate()).padStart(2, '0');
+              let mes = String(novaData.getMonth() + 1).padStart(2, '0');
+              document.getElementById('lblPrazo').innerText = `${dia}/${mes}/${novaData.getFullYear()}`;
+          }
+      }
+
       function mostrarListaConvidados(convidados) {
         var html = "";
         convidados.forEach(c => {
           var isConf = c.status === 'Confirmado' ? 'checked' : '';
           var isRec = c.status === 'Recusado' ? 'checked' : '';
           var grp = `rsvp_${c.linha}`;
-          var extra = []; var emoji = "";
-          if(c.funcao && c.funcao.match(/noiv/i)) emoji = "💍";
-          else if(c.funcao && c.funcao.match(/madrinha|padrinho/i)) emoji = "✨";
-          if(c.parentesco) extra.push(c.parentesco);
           
           html += `
             <div class="convidado-item">
-              <p class="nome">${emoji} ${c.nome}</p>
-              ${extra.length ? `<div class="info-extra"><span>${extra.join(' • ')}</span></div>` : ''}
+              <p class="nome">${c.nome}</p>
               <div class="radio-group">
                 <input type="radio" name="${grp}" id="${grp}_y" value="Confirmado" data-linha="${c.linha}" ${isConf}>
-                <label for="${grp}_y">Vou ✅</label>
+                <label for="${grp}_y">✅ Vou</label>
                 <input type="radio" name="${grp}" id="${grp}_n" value="Recusado" data-linha="${c.linha}" ${isRec}>
-                <label for="${grp}_n">Não vou ❌</label>
+                <label for="${grp}_n">❌ Não vou</label>
               </div>
             </div>`;
         });
         document.getElementById('nomesContainer').innerHTML = html;
-        switchView('listaConvidados');
-        alertMsg("");
+        switchView('rsvp');
       }
 
       function enviarConfirmacao() {
-        var btn = document.getElementById('btnConfirmar');
-        btn.disabled = true; btn.innerText = "Salvando...";
-        toggleLoading(true, "Enviando respostas...");
+        toggleLoading(true, "Enviando...");
         var respostas = [];
         document.querySelectorAll('#nomesContainer input:checked').forEach(input => {
           respostas.push({ linha: parseInt(input.dataset.linha), status: input.value });
@@ -478,17 +336,12 @@
           .then(res => {
              toggleLoading(false);
              if(res.error) throw new Error(res.error);
-             switchView('telaSucesso');
-             alertMsg("");
+             switchView('sucesso'); 
           }).catch(e => tratarErro(e));
       }
 
-      // --- UTILITÁRIOS ---
       function tratarErro(e) {
         toggleLoading(false);
-        document.getElementById('btnBuscar').disabled = false;
-        var btnConf = document.getElementById('btnConfirmar');
-        if(btnConf) { btnConf.disabled = false; btnConf.innerText = "Salvar Confirmação"; }
         alertMsg("⚠️ " + (e.message || "Erro de conexão"), true);
       }
 
@@ -498,6 +351,7 @@
         div.style.display = 'block'; div.innerText = msg;
         div.style.backgroundColor = erro ? '#ffdddd' : '#ddffdd';
         div.style.color = erro ? '#a00' : '#0a0';
+        setTimeout(() => div.style.display='none', 4000);
       }
 
       function toggleLoading(show, txt) {
@@ -505,25 +359,6 @@
         div.style.display = show ? 'block' : 'none';
         if(txt) div.innerText = txt;
       }
-      
-      function switchView(viewId) {
-         ['conteudo-ativo', 'listaConvidados', 'painelAdmin', 'telaSucesso', 'conteudo-encerrado'].forEach(id => {
-             document.getElementById(id).style.display = (id === viewId) ? 'flex' : 'none';
-         });
-      }
-
-      function reiniciar(e) {
-        e.preventDefault();
-        document.getElementById('codigoInput').value = "";
-        var btnConf = document.getElementById('btnConfirmar');
-        if(btnConf) { btnConf.disabled = false; btnConf.innerText = "Salvar Confirmação"; }
-        switchView('conteudo-ativo');
-        alertMsg(""); 
-      }
     </script>
   </body>
 </html>
-
-
-
-
