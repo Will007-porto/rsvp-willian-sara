@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SALA DE CONTROLE | Gestão Integrada</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --panel: #1e1e1e;
+            --border: #333;
+            --text-main: #e0e0e0;
+            --highlight: #0A4F3A; /* Verde do seu convite */
+            --danger: #D93025;
+            --success: #28a745;
+            --pending: #ffc107;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR (Controles e Adição) --- */
+        aside {
+            width: 320px;
+            background-color: var(--panel);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 15px;
+            z-index: 10;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+        }
+
+        aside h2 { font-size: 14px; text-transform: uppercase; color: #888; letter-spacing: 1px; margin-bottom: 5px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+
+        .form-group label { display: block; font-size: 11px; margin-bottom: 4px; color: #aaa; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 10px; background: #252525; border: 1px solid #444; 
+            color: #fff; border-radius: 4px; font-size: 13px; margin-bottom: 10px;
+        }
+        .form-group input:focus { border-color: var(--highlight); outline: none; }
+
+        button.btn-action {
+            width: 100%; padding: 12px; border: none; border-radius: 4px; 
+            font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 12px;
+            transition: 0.2s;
+        }
+        .btn-primary { background-color: var(--highlight); color: white; }
+        .btn-primary:hover { background-color: #0d6349; }
+        
+        /* Stats Box */
+        .stats-container {
+            margin-top: auto;
+            background: #252525;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #333;
+        }
+        .stat-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+        .stat-val { font-weight: bold; }
+        .st-ok { color: var(--success); }
+        .st-no { color: var(--danger); }
+
+        /* --- MAIN (Tabela) --- */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 30px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+        
+        .header-title h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+        .header-title span { font-size: 12px; color: #777; text-transform: uppercase; }
+
+        .top-controls { display: flex; gap: 10px; align-items: center; }
+        .refresh-btn { background: none; border: 1px solid #444; color: #888; width: 40px; height: 40px; border-radius: 4px; cursor: pointer; }
+        .refresh-btn:hover { color: #fff; border-color: #fff; }
+        
+        .search-box { position: relative; width: 300px; }
+        .search-box input { 
+            width: 100%; padding: 10px 10px 10px 35px; background: #1e1e1e; border: 1px solid #444; 
+            color: white; border-radius: 4px; 
+        }
+        .search-box i { position: absolute; left: 12px; top: 13px; color: #666; font-size: 12px; }
+
+        /* Tabela */
+        .table-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            background: var(--panel);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        
+        thead th {
+            background: #252525; position: sticky; top: 0; padding: 12px 15px; text-align: left;
+            font-size: 11px; text-transform: uppercase; color: #888; border-bottom: 2px solid #333;
+        }
+
+        tbody tr { border-bottom: 1px solid #2a2a2a; transition: background 0.1s; }
+        tbody tr:hover { background: #252525; }
+        tbody td { padding: 10px 15px; color: #ccc; vertical-align: middle; }
+
+        /* Badges */
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .b-confirmado { background: rgba(40, 167, 69, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .b-recusado { background: rgba(217, 48, 37, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+        .b-pendente { background: rgba(255, 193, 7, 0.1); color: var(--pending); border: 1px solid var(--pending); }
+
+        .action-btn { background: none; border: none; cursor: pointer; color: #555; font-size: 14px; padding: 5px; }
+        .action-btn:hover { color: var(--danger); }
+
+        /* Loading Overlay */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center;
+            z-index: 1000; flex-direction: column; gap: 15px;
+        }
+        .spinner {
+            width: 40px; height: 40px; border: 4px solid #333; border-top: 4px solid var(--highlight);
+            border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <div style="color: #fff; font-size: 14px; letter-spacing: 1px;">PROCESSANDO...</div>
+    </div>
+
+    <aside>
+        <div style="margin-bottom: 10px;">
+            <div style="font-weight: 700; color: #fff; font-size: 16px;">SALA DE CONTROLE</div>
+            <div style="font-size: 10px; color: #666;">v3.0 Integrada</div>
+        </div>
+
+        <div>
+            <h2>Adicionar Convidado</h2>
+            <div class="form-group">
+                <label>Nome Completo</label>
+                <input type="text" id="addNome" placeholder="Ex: João da Silva">
+            </div>
+            
+            <div class="form-group">
+                <label>Código do Convite</label>
+                <input type="text" id="addCodigo" placeholder="WS-RJ-00" style="text-transform: uppercase;">
+            </div>
+
+            <div class="form-group">
+                <label>Lado (Família/Amigos)</label>
+                <select id="addLado">
+                    <option value="Willian">Lado do Willian</option>
+                    <option value="Sara">Lado da Sara</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Parentesco</label>
+                <input type="text" id="addParentesco" placeholder="Ex: Primo, Tio">
+            </div>
+            <div class="form-group">
+                <label>Função (Opcional)</label>
+                <input type="text" id="addFuncao" placeholder="Ex: Padrinho">
+            </div>
+
+            <button class="btn-action btn-primary" onclick="adicionarConvidado()">GRAVAR NO BANCO</button>
+        </div>
+
+        <div class="stats-container">
+            <h2>Métricas em Tempo Real</h2>
+            <div class="stat-row"><span>Total Lista:</span> <span class="stat-val" id="statTotal">0</span></div>
+            <div class="stat-row"><span>Confirmados:</span> <span class="stat-val st-ok" id="statConf">0</span></div>
+            <div class="stat-row"><span>Recusados:</span> <span class="stat-val st-no" id="statRec">0</span></div>
+            <div class="stat-row" style="border-top: 1px solid #444; padding-top: 5px; margin-top: 5px;">
+                <span>Pendentes:</span> <span class="stat-val" style="color: #ccc" id="statPend">0</span>
+            </div>
+        </div>
+    </aside>
+
+    <main>
+        <header>
+            <div class="header-title">
+                <h1>Painel Operacional</h1>
+                <span>Casamento Willian & Sara 2026</span>
+            </div>
+            
+            <div class="top-controls">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Filtrar por nome, código ou lado..." onkeyup="filtrarTabela()">
+                </div>
+                <button class="refresh-btn" onclick="carregarDados()" title="Atualizar Dados"><i class="fa-solid fa-rotate"></i></button>
+            </div>
+        </header>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Nome</th>
+                        <th>Código</th>
+                        <th>Lado</th>
+                        <th style="text-align: center;">Status</th>
+                        <th style="text-align: right;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // --- CONFIGURAÇÃO ---
+        // A NOVA URL QUE VOCÊ ENVIOU:
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwsg3trPiCdX59SL4xudGWKU5qwPxwq_PG71ENsbULaO40I9PzEGzYB78nwh9Ha1kGN/exec"; 
+
+        let globalData = [];
+
+        // --- INICIALIZAÇÃO ---
+        window.onload = function() {
+            carregarDados();
+        };
+
+        // --- COMUNICAÇÃO COM O BACKEND (SHEETS) ---
+        async function apiRequest(action, data = {}) {
+            toggleLoader(true);
+            
+            // Usando Content-Type 'text/plain;charset=utf-8' para evitar Preflight (OPTIONS)
+            // Isso geralmente resolve o problema de CORS com Apps Script
+            const params = {
+                method: "POST",
+                body: JSON.stringify({ action: action, ...data })
+            };
+
+            try {
+                const response = await fetch(SCRIPT_URL, params);
+                
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+
+                const json = await response.json();
+                toggleLoader(false);
+                return json;
+
+            } catch (error) {
+                toggleLoader(false);
+                console.error("Detalhes do erro:", error);
+                
+                alert("ERRO: Não foi possível conectar com a planilha.\n\n" + error.message);
+                
+                return { error: true };
+            }
+        }
+
+        // --- FUNÇÕES DE NEGÓCIO ---
+
+        // 1. Carregar Lista (READ)
+        async function carregarDados() {
+            const res = await apiRequest('listarTodos');
+            if (res.success && res.convidados) {
+                globalData = res.convidados;
+                renderizarTabela(globalData);
+                atualizarStats(globalData);
+            } else {
+                console.warn("Nenhum dado retornado ou erro na API");
+            }
+        }
+
+        // 2. Adicionar (CREATE)
+        async function adicionarConvidado() {
+            const nome = document.getElementById('addNome').value.trim();
+            const codigo = document.getElementById('addCodigo').value.trim().toUpperCase();
+            const lado = document.getElementById('addLado').value;
+            const parentesco = document.getElementById('addParentesco').value.trim();
+            const funcao = document.getElementById('addFuncao').value.trim();
+
+            if (!nome || !codigo) {
+                alert("Nome e Código são obrigatórios.");
+                return;
+            }
+
+            const payload = {
+                nome: nome,
+                codigo: codigo,
+                lado: lado,
+                parentesco: parentesco || "-",
+                funcao: funcao || "-"
+            };
+
+            const res = await apiRequest('adicionarConvidado', { dados: payload });
+            if (res.success) {
+                alert("Convidado adicionado com sucesso!");
+                document.getElementById('addNome').value = "";
+                document.getElementById('addCodigo').value = "";
+                document.getElementById('addParentesco').value = "";
+                document.getElementById('addFuncao').value = "";
+                carregarDados();
+            } else {
+                alert("Erro ao adicionar: " + (res.error || "Desconhecido"));
+            }
+        }
+
+        // 3. Excluir (DELETE)
+        async function excluirConvidado(linha, nome) {
+            if (confirm(`Tem certeza que deseja apagar ${nome} da planilha permanentemente?`)) {
+                const res = await apiRequest('excluirConvidado', { linha: linha });
+                if (res.success) {
+                    carregarDados();
+                } else {
+                    alert("Erro ao excluir.");
+                }
+            }
+        }
+
+        // --- RENDERIZAÇÃO E UX ---
+
+        function renderizarTabela(lista) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            if (lista.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px;">Nenhum convidado encontrado.</td></tr>';
+                return;
+            }
+
+            lista.forEach((c, index) => {
+                let badgeClass = 'b-pendente';
+                let statusLabel = c.status || 'Pendente';
+                
+                if (statusLabel === 'Confirmado') badgeClass = 'b-confirmado';
+                if (statusLabel === 'Recusado') badgeClass = 'b-recusado';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="color:#666; font-size: 11px;">${c.linha}</td>
+                    <td style="font-weight: 500; color: #fff;">${c.nome}</td>
+                    <td style="font-family: monospace; color: var(--highlight);">${c.codigo || '---'}</td>
+                    <td>${c.lado || '-'}</td>
+                    <td style="text-align: center;"><span class="badge ${badgeClass}">${statusLabel}</span></td>
+                    <td style="text-align: right;">
+                        <button class="action-btn" onclick="excluirConvidado(${c.linha}, '${c.nome}')" title="Excluir">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filtrarTabela() {
+            const termo = document.getElementById('searchInput').value.toLowerCase();
+            const filtrados = globalData.filter(c => {
+                return (c.nome && c.nome.toLowerCase().includes(termo)) ||
+                       (c.codigo && c.codigo.toLowerCase().includes(termo)) ||
+                       (c.lado && c.lado.toLowerCase().includes(termo));
+            });
+            renderizarTabela(filtrados);
+        }
+
+        function atualizarStats(lista) {
+            const total = lista.length;
+            const confirmados = lista.filter(x => x.status === 'Confirmado').length;
+            const recusados = lista.filter(x => x.status === 'Recusado').length;
+            
+            document.getElementById('statTotal').innerText = total;
+            document.getElementById('statConf').innerText = confirmados;
+            document.getElementById('statRec').innerText = recusados;
+            document.getElementById('statPend').innerText = total - (confirmados + recusados);
+        }
+
+        function toggleLoader(show) {
+            document.getElementById('loader').style.display = show ? 'flex' : 'none';
+        }
+
+    </script>
+</body>
+</html>
