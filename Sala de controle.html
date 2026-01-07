@@ -3,230 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SALA DE CONTROLE | Gestão Integrada</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Painel de Gestão | Willian & Sara</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --bg-dark: #121212;
-            --panel: #1e1e1e;
-            --border: #333;
-            --text-main: #e0e0e0;
-            --highlight: #0A4F3A; /* Verde do seu convite */
-            --danger: #D93025;
-            --success: #28a745;
-            --pending: #ffc107;
+            --primary: #0A4F3A; /* Verde Identidade */
+            --primary-light: #e0f2ea;
+            --bg-body: #f4f6f8;
+            --bg-card: #ffffff;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            
+            --status-ok: #10b981;
+            --status-no: #ef4444;
+            --status-wait: #f59e0b;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
+        body { background-color: var(--bg-body); color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--bg-card);
+            padding: 15px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
+        .brand { display: flex; align-items: center; gap: 10px; }
+        .brand h1 { font-size: 1.25rem; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
+        .brand span { font-size: 0.75rem; background: var(--primary-light); color: var(--primary); padding: 4px 8px; border-radius: 20px; font-weight: 600; }
 
-        /* --- SIDEBAR (Controles e Adição) --- */
-        aside {
-            width: 320px;
-            background-color: var(--panel);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            gap: 15px;
-            z-index: 10;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
-        }
-
-        aside h2 { font-size: 14px; text-transform: uppercase; color: #888; letter-spacing: 1px; margin-bottom: 5px; border-bottom: 1px solid #333; padding-bottom: 5px; }
-
-        .form-group label { display: block; font-size: 11px; margin-bottom: 4px; color: #aaa; }
-        .form-group input, .form-group select {
-            width: 100%; padding: 10px; background: #252525; border: 1px solid #444; 
-            color: #fff; border-radius: 4px; font-size: 13px; margin-bottom: 10px;
-        }
-        .form-group input:focus { border-color: var(--highlight); outline: none; }
-
-        button.btn-action {
-            width: 100%; padding: 12px; border: none; border-radius: 4px; 
-            font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 12px;
+        .header-actions button {
+            background: var(--primary); color: white; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px;
             transition: 0.2s;
         }
-        .btn-primary { background-color: var(--highlight); color: white; }
-        .btn-primary:hover { background-color: #0d6349; }
-        
-        /* Stats Box */
-        .stats-container {
-            margin-top: auto;
-            background: #252525;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #333;
-        }
-        .stat-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
-        .stat-val { font-weight: bold; }
-        .st-ok { color: var(--success); }
-        .st-no { color: var(--danger); }
+        .header-actions button:hover { background-color: #073a2b; }
 
-        /* --- MAIN (Tabela) --- */
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 20px 30px;
-        }
+        /* --- DASHBOARD CONTENT --- */
+        .container { padding: 30px 40px; max-width: 1400px; margin: 0 auto; width: 100%; }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 15px;
+        /* KPI CARDS */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .kpi-card { background: white; padding: 20px; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .kpi-label { font-size: 0.85rem; color: var(--text-light); font-weight: 500; margin-bottom: 5px; }
+        .kpi-value { font-size: 1.8rem; font-weight: 700; color: var(--text-dark); }
+        .kpi-sub { font-size: 0.8rem; margin-top: 5px; }
+        .kpi-sub.ok { color: var(--status-ok); }
+        .kpi-sub.no { color: var(--status-no); }
+
+        /* FILTERS & TOOLS */
+        .toolbar { 
+            background: white; padding: 15px 20px; border-radius: 10px 10px 0 0; 
+            border: 1px solid var(--border); border-bottom: none;
+            display: flex; gap: 15px; flex-wrap: wrap; align-items: center;
         }
         
-        .header-title h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
-        .header-title span { font-size: 12px; color: #777; text-transform: uppercase; }
+        .search-wrapper { position: relative; flex: 1; min-width: 250px; }
+        .search-wrapper i { position: absolute; left: 12px; top: 12px; color: #94a3b8; }
+        .search-wrapper input {
+            width: 100%; padding: 10px 10px 10px 35px; border: 1px solid var(--border);
+            border-radius: 6px; outline: none; font-size: 0.9rem;
+        }
+        .search-wrapper input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-light); }
 
-        .top-controls { display: flex; gap: 10px; align-items: center; }
-        .refresh-btn { background: none; border: 1px solid #444; color: #888; width: 40px; height: 40px; border-radius: 4px; cursor: pointer; }
-        .refresh-btn:hover { color: #fff; border-color: #fff; }
+        select {
+            padding: 10px 15px; border: 1px solid var(--border); border-radius: 6px;
+            background: white; color: var(--text-dark); cursor: pointer; outline: none; font-size: 0.9rem;
+        }
+        select:focus { border-color: var(--primary); }
+
+        /* TABLE */
+        .table-container { 
+            background: white; border: 1px solid var(--border); border-radius: 0 0 10px 10px; 
+            overflow: hidden; overflow-x: auto; 
+        }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        thead { background: #f8fafc; border-bottom: 1px solid var(--border); }
+        th { text-align: left; padding: 15px 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-light); font-weight: 600; letter-spacing: 0.5px; }
+        td { padding: 15px 20px; font-size: 0.9rem; color: var(--text-dark); border-bottom: 1px solid var(--border); vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: #f8fafc; }
+
+        /* BADGES */
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .badge-conf { background: #d1fae5; color: #065f46; }
+        .badge-rec { background: #fee2e2; color: #991b1b; }
+        .badge-pend { background: #fef3c7; color: #92400e; }
         
-        .search-box { position: relative; width: 300px; }
-        .search-box input { 
-            width: 100%; padding: 10px 10px 10px 35px; background: #1e1e1e; border: 1px solid #444; 
-            color: white; border-radius: 4px; 
-        }
-        .search-box i { position: absolute; left: 12px; top: 13px; color: #666; font-size: 12px; }
+        .badge-side { background: #eff6ff; color: #1e40af; border: 1px solid #dbeafe; }
 
-        /* Tabela */
-        .table-wrapper {
-            flex: 1;
-            overflow-y: auto;
-            background: var(--panel);
-            border-radius: 6px;
-            border: 1px solid var(--border);
-        }
+        /* ACTIONS */
+        .action-btn { background: none; border: none; cursor: pointer; padding: 6px; color: #94a3b8; transition: 0.2s; font-size: 1rem; }
+        .action-btn:hover { color: var(--primary); background: #f1f5f9; border-radius: 4px; }
+        .action-btn.del:hover { color: var(--status-no); }
 
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        
-        thead th {
-            background: #252525; position: sticky; top: 0; padding: 12px 15px; text-align: left;
-            font-size: 11px; text-transform: uppercase; color: #888; border-bottom: 2px solid #333;
-        }
-
-        tbody tr { border-bottom: 1px solid #2a2a2a; transition: background 0.1s; }
-        tbody tr:hover { background: #252525; }
-        tbody td { padding: 10px 15px; color: #ccc; vertical-align: middle; }
-
-        /* Badges */
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
-        .b-confirmado { background: rgba(40, 167, 69, 0.2); color: var(--success); border: 1px solid var(--success); }
-        .b-recusado { background: rgba(217, 48, 37, 0.2); color: var(--danger); border: 1px solid var(--danger); }
-        .b-pendente { background: rgba(255, 193, 7, 0.1); color: var(--pending); border: 1px solid var(--pending); }
-
-        .action-btn { background: none; border: none; cursor: pointer; color: #555; font-size: 14px; padding: 5px; }
-        .action-btn:hover { color: var(--danger); }
-
-        /* Loading Overlay */
-        #loader {
+        /* MODAL */
+        .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center;
-            z-index: 1000; flex-direction: column; gap: 15px;
+            background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000;
+            backdrop-filter: blur(2px);
         }
-        .spinner {
-            width: 40px; height: 40px; border: 4px solid #333; border-top: 4px solid var(--highlight);
-            border-radius: 50%; animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .modal { background: white; width: 500px; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden; }
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+        .modal-header h3 { font-size: 1.1rem; font-weight: 600; }
+        .modal-body { padding: 25px; display: grid; gap: 15px; }
+        
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .input-group label { display: block; font-size: 0.85rem; color: var(--text-light); margin-bottom: 6px; }
+        .input-group input, .input-group select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; outline: none; }
 
+        .modal-footer { padding: 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; background: #f8fafc; }
+        .btn-cancel { background: white; border: 1px solid var(--border); padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 500; color: var(--text-light); }
+        .btn-save { background: var(--primary); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 500; color: white; }
+
+        /* LOADER */
+        #loader { display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 10px 20px; border-radius: 30px; font-size: 0.9rem; z-index: 2000; box-shadow: 0 4px 6px rgba(0,0,0,0.1); align-items: center; gap: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="loader">
-        <div class="spinner"></div>
-        <div style="color: #fff; font-size: 14px; letter-spacing: 1px;">PROCESSANDO...</div>
-    </div>
+    <div id="loader"><i class="fa-solid fa-spinner fa-spin"></i> Processando...</div>
 
-    <aside>
-        <div style="margin-bottom: 10px;">
-            <div style="font-weight: 700; color: #fff; font-size: 16px;">SALA DE CONTROLE</div>
-            <div style="font-size: 10px; color: #666;">v3.0 Integrada</div>
+    <header>
+        <div class="brand">
+            <h1>SALA DE CONTROLE</h1>
+            <span>Admin</span>
+        </div>
+        <div class="header-actions">
+            <button onclick="carregarDados()"><i class="fa-solid fa-rotate-right"></i> Atualizar Dados</button>
+            <button onclick="abrirModalAdd()"><i class="fa-solid fa-plus"></i> Novo Convidado</button>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">Total de Convidados</div>
+                <div class="kpi-value" id="kpiTotal">0</div>
+                <div class="kpi-sub">Lista completa</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Confirmados</div>
+                <div class="kpi-value" id="kpiConf" style="color: var(--status-ok)">0</div>
+                <div class="kpi-sub ok" id="kpiConfPerc">0% do total</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Recusados</div>
+                <div class="kpi-value" id="kpiRec" style="color: var(--status-no)">0</div>
+                <div class="kpi-sub no">Não irão comparecer</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Pendentes</div>
+                <div class="kpi-value" id="kpiPend" style="color: var(--status-wait)">0</div>
+                <div class="kpi-sub">Aguardando resposta</div>
+            </div>
         </div>
 
-        <div>
-            <h2>Adicionar Convidado</h2>
-            <div class="form-group">
-                <label>Nome Completo</label>
-                <input type="text" id="addNome" placeholder="Ex: João da Silva">
+        <div class="toolbar">
+            <div class="search-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Buscar por nome, código ou função..." onkeyup="aplicarFiltros()">
             </div>
             
-            <div class="form-group">
-                <label>Código do Convite</label>
-                <input type="text" id="addCodigo" placeholder="WS-RJ-00" style="text-transform: uppercase;">
-            </div>
+            <select id="filterStatus" onchange="aplicarFiltros()">
+                <option value="">Status: Todos</option>
+                <option value="Confirmado">Confirmados</option>
+                <option value="Recusado">Recusados</option>
+                <option value="Pendente">Pendentes</option>
+            </select>
 
-            <div class="form-group">
-                <label>Lado (Família/Amigos)</label>
-                <select id="addLado">
-                    <option value="Willian">Lado do Willian</option>
-                    <option value="Sara">Lado da Sara</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Parentesco</label>
-                <input type="text" id="addParentesco" placeholder="Ex: Primo, Tio">
-            </div>
-            <div class="form-group">
-                <label>Função (Opcional)</label>
-                <input type="text" id="addFuncao" placeholder="Ex: Padrinho">
-            </div>
-
-            <button class="btn-action btn-primary" onclick="adicionarConvidado()">GRAVAR NO BANCO</button>
+            <select id="filterLado" onchange="aplicarFiltros()">
+                <option value="">Lado: Todos</option>
+                <option value="Willian">Lado do Willian</option>
+                <option value="Sara">Lado da Sara</option>
+            </select>
         </div>
 
-        <div class="stats-container">
-            <h2>Métricas em Tempo Real</h2>
-            <div class="stat-row"><span>Total Lista:</span> <span class="stat-val" id="statTotal">0</span></div>
-            <div class="stat-row"><span>Confirmados:</span> <span class="stat-val st-ok" id="statConf">0</span></div>
-            <div class="stat-row"><span>Recusados:</span> <span class="stat-val st-no" id="statRec">0</span></div>
-            <div class="stat-row" style="border-top: 1px solid #444; padding-top: 5px; margin-top: 5px;">
-                <span>Pendentes:</span> <span class="stat-val" style="color: #ccc" id="statPend">0</span>
-            </div>
-        </div>
-    </aside>
-
-    <main>
-        <header>
-            <div class="header-title">
-                <h1>Painel Operacional</h1>
-                <span>Casamento Willian & Sara 2026</span>
-            </div>
-            
-            <div class="top-controls">
-                <div class="search-box">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="searchInput" placeholder="Filtrar por nome, código ou lado..." onkeyup="filtrarTabela()">
-                </div>
-                <button class="refresh-btn" onclick="carregarDados()" title="Atualizar Dados"><i class="fa-solid fa-rotate"></i></button>
-            </div>
-        </header>
-
-        <div class="table-wrapper">
+        <div class="table-container">
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 50px;">#</th>
                         <th>Nome</th>
-                        <th>Código</th>
+                        <th>Parentesco / Função</th>
                         <th>Lado</th>
-                        <th style="text-align: center;">Status</th>
+                        <th>Código</th>
+                        <th>Status</th>
                         <th style="text-align: right;">Ações</th>
                     </tr>
                 </thead>
@@ -234,169 +202,248 @@
                     </tbody>
             </table>
         </div>
-    </main>
+    </div>
+
+    <div class="modal-overlay" id="mainModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Editar Convidado</h3>
+                <button class="action-btn" onclick="fecharModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editLinha"> <div class="input-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="editNome">
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Código (Ex: WS-01-01)</label>
+                        <input type="text" id="editCodigo" style="text-transform: uppercase;">
+                    </div>
+                    <div class="input-group">
+                        <label>Lado</label>
+                        <select id="editLado">
+                            <option value="Willian">Willian</option>
+                            <option value="Sara">Sara</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Parentesco</label>
+                        <input type="text" id="editParentesco">
+                    </div>
+                    <div class="input-group">
+                        <label>Função</label>
+                        <input type="text" id="editFuncao">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Status RSVP</label>
+                    <select id="editStatus">
+                        <option value="Pendente">Pendente</option>
+                        <option value="Confirmado">Confirmado</option>
+                        <option value="Recusado">Recusado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+                <button class="btn-save" onclick="salvarDados()">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // --- CONFIGURAÇÃO ---
-        // A NOVA URL QUE VOCÊ ENVIOU:
+        // CONFIGURAÇÃO DO SEU SCRIPT FIXO
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwsg3trPiCdX59SL4xudGWKU5qwPxwq_PG71ENsbULaO40I9PzEGzYB78nwh9Ha1kGN/exec"; 
 
         let globalData = [];
+        let modoEdicao = false; // false = Criar Novo, true = Editar Existente
 
-        // --- INICIALIZAÇÃO ---
-        window.onload = function() {
-            carregarDados();
-        };
+        window.onload = carregarDados;
 
-        // --- COMUNICAÇÃO COM O BACKEND (SHEETS) ---
+        // --- API ---
         async function apiRequest(action, data = {}) {
-            toggleLoader(true);
-            
-            // Usando Content-Type 'text/plain;charset=utf-8' para evitar Preflight (OPTIONS)
-            // Isso geralmente resolve o problema de CORS com Apps Script
+            mostrarLoader(true);
+            // Usando no-cors ou text/plain para evitar erros de CORS no navegador
             const params = {
                 method: "POST",
                 body: JSON.stringify({ action: action, ...data })
             };
-
             try {
-                const response = await fetch(SCRIPT_URL, params);
-                
-                if (!response.ok) {
-                    throw new Error(`Erro HTTP: ${response.status}`);
-                }
-
-                const json = await response.json();
-                toggleLoader(false);
+                const res = await fetch(SCRIPT_URL, params);
+                if (!res.ok) throw new Error("Erro na rede");
+                const json = await res.json();
+                mostrarLoader(false);
                 return json;
-
-            } catch (error) {
-                toggleLoader(false);
-                console.error("Detalhes do erro:", error);
-                
-                alert("ERRO: Não foi possível conectar com a planilha.\n\n" + error.message);
-                
+            } catch (err) {
+                mostrarLoader(false);
+                alert("Erro de conexão: " + err.message);
                 return { error: true };
             }
         }
 
-        // --- FUNÇÕES DE NEGÓCIO ---
-
-        // 1. Carregar Lista (READ)
+        // --- CRUD ---
         async function carregarDados() {
             const res = await apiRequest('listarTodos');
-            if (res.success && res.convidados) {
+            if (res.success) {
                 globalData = res.convidados;
-                renderizarTabela(globalData);
-                atualizarStats(globalData);
-            } else {
-                console.warn("Nenhum dado retornado ou erro na API");
+                aplicarFiltros(); // Renderiza já filtrado
+                atualizarKPIs();
             }
         }
 
-        // 2. Adicionar (CREATE)
-        async function adicionarConvidado() {
-            const nome = document.getElementById('addNome').value.trim();
-            const codigo = document.getElementById('addCodigo').value.trim().toUpperCase();
-            const lado = document.getElementById('addLado').value;
-            const parentesco = document.getElementById('addParentesco').value.trim();
-            const funcao = document.getElementById('addFuncao').value.trim();
+        async function excluir(linha, nome) {
+            if(!confirm(`Excluir definitivamente ${nome}?`)) return;
+            const res = await apiRequest('excluirConvidado', { linha: linha });
+            if(res.success) carregarDados();
+        }
 
-            if (!nome || !codigo) {
-                alert("Nome e Código são obrigatórios.");
-                return;
-            }
-
-            const payload = {
-                nome: nome,
-                codigo: codigo,
-                lado: lado,
-                parentesco: parentesco || "-",
-                funcao: funcao || "-"
+        async function salvarDados() {
+            const dados = {
+                nome: document.getElementById('editNome').value,
+                codigo: document.getElementById('editCodigo').value.toUpperCase(),
+                lado: document.getElementById('editLado').value,
+                parentesco: document.getElementById('editParentesco').value,
+                funcao: document.getElementById('editFuncao').value,
+                status: document.getElementById('editStatus').value,
+                linha: document.getElementById('editLinha').value
             };
 
-            const res = await apiRequest('adicionarConvidado', { dados: payload });
-            if (res.success) {
-                alert("Convidado adicionado com sucesso!");
-                document.getElementById('addNome').value = "";
-                document.getElementById('addCodigo').value = "";
-                document.getElementById('addParentesco').value = "";
-                document.getElementById('addFuncao').value = "";
+            if(!dados.nome || !dados.codigo) return alert("Nome e Código obrigatórios");
+
+            let action = modoEdicao ? 'editarConvidado' : 'adicionarConvidado';
+            
+            // Se for adicionar, backend espera estrutura diferente, adaptamos aqui
+            let payload = modoEdicao ? dados : { dados: dados };
+
+            const res = await apiRequest(action, payload);
+            
+            if(res.success) {
+                fecharModal();
                 carregarDados();
             } else {
-                alert("Erro ao adicionar: " + (res.error || "Desconhecido"));
+                alert("Erro ao salvar: " + (res.error || "Tente novamente"));
             }
         }
 
-        // 3. Excluir (DELETE)
-        async function excluirConvidado(linha, nome) {
-            if (confirm(`Tem certeza que deseja apagar ${nome} da planilha permanentemente?`)) {
-                const res = await apiRequest('excluirConvidado', { linha: linha });
-                if (res.success) {
-                    carregarDados();
-                } else {
-                    alert("Erro ao excluir.");
-                }
-            }
-        }
+        // --- UI & FILTROS ---
+        function aplicarFiltros() {
+            const termo = document.getElementById('searchInput').value.toLowerCase();
+            const statusFiltro = document.getElementById('filterStatus').value;
+            const ladoFiltro = document.getElementById('filterLado').value;
 
-        // --- RENDERIZAÇÃO E UX ---
+            const filtrados = globalData.filter(item => {
+                // Filtro Texto
+                const matchTexto = (item.nome + item.codigo + (item.funcao || "")).toLowerCase().includes(termo);
+                // Filtro Status
+                const matchStatus = statusFiltro ? item.status === statusFiltro : true;
+                // Filtro Lado
+                const matchLado = ladoFiltro ? (item.lado && item.lado.includes(ladoFiltro)) : true;
+                
+                return matchTexto && matchStatus && matchLado;
+            });
+
+            renderizarTabela(filtrados);
+        }
 
         function renderizarTabela(lista) {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
-            if (lista.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px;">Nenhum convidado encontrado.</td></tr>';
+            if(lista.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:#999;">Nenhum registro encontrado.</td></tr>`;
                 return;
             }
 
-            lista.forEach((c, index) => {
-                let badgeClass = 'b-pendente';
-                let statusLabel = c.status || 'Pendente';
-                
-                if (statusLabel === 'Confirmado') badgeClass = 'b-confirmado';
-                if (statusLabel === 'Recusado') badgeClass = 'b-recusado';
+            lista.forEach(c => {
+                // Classes de Status
+                let badgeClass = 'badge-pend';
+                if(c.status === 'Confirmado') badgeClass = 'badge-conf';
+                if(c.status === 'Recusado') badgeClass = 'badge-rec';
+
+                // Tratamento de nulos
+                const parentesco = c.parentesco || ''; 
+                const funcao = c.funcao || '';
+                const detalhes = [parentesco, funcao].filter(Boolean).join(' • ');
 
                 const tr = document.createElement('tr');
+                // IMPORTANTE: Passamos o objeto 'c' completo para a função de editar
+                // Escapamos as aspas simples no JSON.stringify para evitar erro de JS
+                const convidadoJSON = JSON.stringify(c).replace(/'/g, "&apos;");
+
                 tr.innerHTML = `
-                    <td style="color:#666; font-size: 11px;">${c.linha}</td>
-                    <td style="font-weight: 500; color: #fff;">${c.nome}</td>
-                    <td style="font-family: monospace; color: var(--highlight);">${c.codigo || '---'}</td>
-                    <td>${c.lado || '-'}</td>
-                    <td style="text-align: center;"><span class="badge ${badgeClass}">${statusLabel}</span></td>
+                    <td style="font-weight: 600;">${c.nome}</td>
+                    <td style="color: #64748b;">${detalhes || '-'}</td>
+                    <td><span class="badge badge-side">${c.lado || '-'}</span></td>
+                    <td style="font-family: monospace; font-size: 0.85rem;">${c.codigo}</td>
+                    <td><span class="badge ${badgeClass}">${c.status || 'Pendente'}</span></td>
                     <td style="text-align: right;">
-                        <button class="action-btn" onclick="excluirConvidado(${c.linha}, '${c.nome}')" title="Excluir">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
+                        <button class="action-btn" title="Editar" onclick='abrirModalEditar(${convidadoJSON})'><i class="fa-solid fa-pen"></i></button>
+                        <button class="action-btn del" title="Excluir" onclick="excluir(${c.linha}, '${c.nome.replace(/'/g, "\\'")}')"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function filtrarTabela() {
-            const termo = document.getElementById('searchInput').value.toLowerCase();
-            const filtrados = globalData.filter(c => {
-                return (c.nome && c.nome.toLowerCase().includes(termo)) ||
-                       (c.codigo && c.codigo.toLowerCase().includes(termo)) ||
-                       (c.lado && c.lado.toLowerCase().includes(termo));
-            });
-            renderizarTabela(filtrados);
+        // --- MODAL ---
+        function abrirModalAdd() {
+            modoEdicao = false;
+            document.getElementById('modalTitle').innerText = "Adicionar Novo Convidado";
+            limparForm();
+            document.getElementById('mainModal').style.display = 'flex';
         }
 
-        function atualizarStats(lista) {
-            const total = lista.length;
-            const confirmados = lista.filter(x => x.status === 'Confirmado').length;
-            const recusados = lista.filter(x => x.status === 'Recusado').length;
+        function abrirModalEditar(obj) {
+            modoEdicao = true;
+            document.getElementById('modalTitle').innerText = "Editar Detalhes";
             
-            document.getElementById('statTotal').innerText = total;
-            document.getElementById('statConf').innerText = confirmados;
-            document.getElementById('statRec').innerText = recusados;
-            document.getElementById('statPend').innerText = total - (confirmados + recusados);
+            // Preencher
+            document.getElementById('editLinha').value = obj.linha;
+            document.getElementById('editNome').value = obj.nome;
+            document.getElementById('editCodigo').value = obj.codigo;
+            document.getElementById('editLado').value = obj.lado || 'Willian';
+            document.getElementById('editStatus').value = obj.status || 'Pendente';
+            
+            document.getElementById('editParentesco').value = obj.parentesco || '';
+            document.getElementById('editFuncao').value = obj.funcao || '';
+
+            document.getElementById('mainModal').style.display = 'flex';
         }
 
-        function toggleLoader(show) {
+        function fecharModal() {
+            document.getElementById('mainModal').style.display = 'none';
+        }
+
+        function limparForm() {
+            document.querySelectorAll('.modal input').forEach(i => i.value = '');
+            document.getElementById('editStatus').value = 'Pendente';
+            document.getElementById('editLado').value = 'Willian';
+        }
+
+        // --- KPI UPDATE ---
+        function atualizarKPIs() {
+            const total = globalData.length;
+            const conf = globalData.filter(x => x.status === 'Confirmado').length;
+            const rec = globalData.filter(x => x.status === 'Recusado').length;
+            const pend = total - (conf + rec);
+
+            document.getElementById('kpiTotal').innerText = total;
+            document.getElementById('kpiConf').innerText = conf;
+            document.getElementById('kpiRec').innerText = rec;
+            document.getElementById('kpiPend').innerText = pend;
+
+            // Porcentagem
+            const perc = total > 0 ? Math.round((conf / total) * 100) : 0;
+            document.getElementById('kpiConfPerc').innerText = perc + "% do total";
+        }
+
+        function mostrarLoader(show) {
             document.getElementById('loader').style.display = show ? 'flex' : 'none';
         }
 
